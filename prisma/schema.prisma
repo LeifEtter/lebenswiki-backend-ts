@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Block {
+  reason                     String   @db.Text
+  blockerId                  Int
+  creationDate               DateTime @default(now())
+  id                         Int      @id @default(autoincrement())
+  blockedId                  Int
+  User_Block_blockedIdToUser User     @relation("Block_blockedIdToUser", fields: [blockedId], references: [id])
+  User_Block_blockerIdToUser User     @relation("Block_blockerIdToUser", fields: [blockerId], references: [id])
+
+  @@index([blockedId], map: "Block_blockedId_fkey")
+  @@index([blockerId], map: "Block_blockerId_fkey")
+}
+
+model Category {
+  id           Int     @id @default(autoincrement())
+  categoryName String  @unique
+  softDelete   Boolean @default(false)
+  Pack         Pack[]  @relation("CategoryToPack")
+  Short        Short[] @relation("CategoryToShort")
+}
+
+model Comment {
+  id                           Int       @id @default(autoincrement())
+  commentResponse              String    @db.Text
+  creatorId                    Int
+  shortsCommentId              Int?
+  parentCommentId              Int?
+  softDelete                   Boolean
+  creationDate                 DateTime  @default(now())
+  updatedAt                    DateTime  @default(now())
+  reactions                    Json?
+  packAsCommentId              Int?
+  User_Comment_creatorIdToUser User      @relation("Comment_creatorIdToUser", fields: [creatorId], references: [id])
+  Pack                         Pack?     @relation(fields: [packAsCommentId], references: [id])
+  Comment                      Comment?  @relation("CommentToComment", fields: [parentCommentId], references: [id])
+  other_Comment                Comment[] @relation("CommentToComment")
+  Short                        Short?    @relation(fields: [shortsCommentId], references: [id])
+  Report                       Report[]
+  User_commentDownVote         User[]    @relation("commentDownVote")
+  User_commentUpVote           User[]    @relation("commentUpVote")
+
+  @@index([creatorId], map: "Comment_creatorId_fkey")
+  @@index([packAsCommentId], map: "Comment_packAsCommentId_fkey")
+  @@index([parentCommentId], map: "Comment_parentCommentId_fkey")
+  @@index([shortsCommentId], map: "Comment_shortsCommentId_fkey")
+}
+
+model Feedback {
+  creationDate DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  reviewed     Boolean
+  reason       String
+  name         String
+}
+
+model Log {
+  id           Int        @id @default(autoincrement())
+  action       Log_action
+  event        String
+  message      Json
+  userId       Int
+  creationDate DateTime   @default(now())
+  User         User       @relation(fields: [userId], references: [id])
+
+  @@index([userId], map: "Log_userId_fkey")
+}
+
+model Pack {
+  id                        Int        @id @default(autoincrement())
+  title                     String
+  description               String     @db.Text
+  published                 Boolean
+  pages                     Json
+  creatorId                 Int
+  titleImage                String     @db.Text
+  reactions                 Json
+  creationDate              DateTime   @default(now())
+  lastUpdated               DateTime
+  initiative                String
+  readTime                  Int
+  imageIdentifier           String     @db.Text
+  packsClap                 Json?
+  Comment                   Comment[]
+  User_Pack_creatorIdToUser User       @relation("Pack_creatorIdToUser", fields: [creatorId], references: [id])
+  Read                      Read[]
+  Report                    Report[]
+  Category                  Category[] @relation("CategoryToPack")
+  User_bookmarkedByForPack  User[]     @relation("bookmarkedByForPack")
+  User_userClap             User[]     @relation("userClap")
+
+  @@index([creatorId], map: "Pack_creatorId_fkey")
+}
+
+model Read {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  packId       Int
+  progress     Int
+  creationDate DateTime @default(now())
+  lastUpdated  DateTime @default(now())
+  Pack         Pack     @relation(fields: [packId], references: [id])
+  User         User     @relation(fields: [userId], references: [id])
+
+  @@index([packId], map: "Read_packId_fkey")
+  @@index([userId], map: "Read_userId_fkey")
+}
+
+model Report {
+  id                Int               @id @default(autoincrement())
+  userId            Int
+  creationDate      DateTime          @default(now())
+  reason            String
+  reportedShortId   Int?
+  reportType        Report_reportType
+  reportedCommentId Int?
+  reportedPackId    Int?
+  Comment           Comment?          @relation(fields: [reportedCommentId], references: [id])
+  Pack              Pack?             @relation(fields: [reportedPackId], references: [id])
+  Short             Short?            @relation(fields: [reportedShortId], references: [id])
+  User              User              @relation(fields: [userId], references: [id])
+
+  @@index([reportedCommentId], map: "Report_reportedCommentId_fkey")
+  @@index([reportedPackId], map: "Report_reportedPackId_fkey")
+  @@index([reportedShortId], map: "Report_reportedShortId_fkey")
+  @@index([userId], map: "Report_userId_fkey")
+}
+
+model Short {
+  id                         Int        @id @default(autoincrement())
+  title                      String
+  content                    String     @db.VarChar(300)
+  creatorId                  Int
+  published                  Boolean
+  requestPublish             Boolean
+  reactions                  Json
+  creationDate               DateTime   @default(now())
+  lastUpdated                DateTime
+  shortsClap                 Json?
+  Comment                    Comment[]
+  Report                     Report[]
+  User_Short_creatorIdToUser User       @relation("Short_creatorIdToUser", fields: [creatorId], references: [id])
+  Category                   Category[] @relation("CategoryToShort")
+  User_bookmarkedBy          User[]     @relation("bookmarkedBy")
+  User_downVote              User[]     @relation("downVote")
+  User_shortClap             User[]     @relation("shortClap")
+  User_upVote                User[]     @relation("upVote")
+
+  @@index([creatorId], map: "Short_creatorId_fkey")
+}
+
+model User {
+  id                              Int       @id @default(autoincrement())
+  email                           String    @unique
+  password                        String
+  name                            String
+  profileImage                    String    @db.Text
+  biography                       String    @db.Text
+  role                            String
+  creationDate                    DateTime  @default(now())
+  lastUpdated                     DateTime  @default(now())
+  softDelete                      Boolean   @default(false)
+  Block_Block_blockedIdToUser     Block[]   @relation("Block_blockedIdToUser")
+  Block_Block_blockerIdToUser     Block[]   @relation("Block_blockerIdToUser")
+  Comment_Comment_creatorIdToUser Comment[] @relation("Comment_creatorIdToUser")
+  Log                             Log[]
+  Pack_Pack_creatorIdToUser       Pack[]    @relation("Pack_creatorIdToUser")
+  Read                            Read[]
+  Report                          Report[]
+  Short_Short_creatorIdToUser     Short[]   @relation("Short_creatorIdToUser")
+  Short_bookmarkedBy              Short[]   @relation("bookmarkedBy")
+  Pack_bookmarkedByForPack        Pack[]    @relation("bookmarkedByForPack")
+  Comment_commentDownVote         Comment[] @relation("commentDownVote")
+  Comment_commentUpVote           Comment[] @relation("commentUpVote")
+  Short_downVote                  Short[]   @relation("downVote")
+  Short_shortClap                 Short[]   @relation("shortClap")
+  Short_upVote                    Short[]   @relation("upVote")
+  Pack_userClap                   Pack[]    @relation("userClap")
+}
+
+enum Log_action {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+}
+
+enum Report_reportType {
+  PACK
+  SHORT
+  COMMENT
+}
