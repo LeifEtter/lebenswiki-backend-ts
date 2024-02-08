@@ -6,15 +6,10 @@ import cors = require("cors");
 import bodyParser = require("body-parser");
 import https = require("https");
 import fs = require("fs");
+// import corsOptionsDelegate = require("./config/cors.config");
 
 const app = express();
-
-const origins: Array<string> = [
-  "https://lebenswiki.com",
-  "https://editor.lebenswiki.com",
-  "http://localhost:54721",
-  process.env.ORIGIN ?? "",
-];
+// app.use(cors(corsOptionsDelegate));
 
 function main() {
   try {
