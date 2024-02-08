@@ -9,6 +9,11 @@ import fs = require("fs");
 // import corsOptionsDelegate = require("./config/cors.config");
 
 const app = express();
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+app.use(bodyParser.json());
+app.route("/test").get((req, res: express.Response) => {
+  return res.status(200).send({ message: "Working" });
+});
 // app.use(cors(corsOptionsDelegate));
 
 function main() {
