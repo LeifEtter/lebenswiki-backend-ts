@@ -34,7 +34,7 @@ model Comment {
   creatorId                    Int
   shortsCommentId              Int?
   parentCommentId              Int?
-  softDelete                   Boolean
+  softDelete                   Boolean @default(false)
   creationDate                 DateTime  @default(now())
   updatedAt                    DateTime  @default(now())
   reactions                    Json?
@@ -78,16 +78,16 @@ model Pack {
   id                        Int        @id @default(autoincrement())
   title                     String
   description               String     @db.Text
-  published                 Boolean
+  published                 Boolean @default(false)
   pages                     Json
   creatorId                 Int
-  titleImage                String     @db.Text
-  reactions                 Json
+  titleImage                String?     @db.Text
+  reactions                 Json  
   creationDate              DateTime   @default(now())
-  lastUpdated               DateTime
+  lastUpdated               DateTime  @default(now())
   initiative                String
   readTime                  Int
-  imageIdentifier           String     @db.Text
+  imageIdentifier           String?     @db.Text
   packsClap                 Json?
   Comment                   Comment[]
   User_Pack_creatorIdToUser User       @relation("Pack_creatorIdToUser", fields: [creatorId], references: [id])
@@ -104,7 +104,7 @@ model Read {
   id           Int      @id @default(autoincrement())
   userId       Int
   packId       Int
-  progress     Int
+  progress     Int @default(0)
   creationDate DateTime @default(now())
   lastUpdated  DateTime @default(now())
   Pack         Pack     @relation(fields: [packId], references: [id])
