@@ -4,3 +4,4 @@ build
 .eslintignore
 .eslintrc
 .vscode
+.VSCodeCounter
