@@ -30,11 +30,12 @@ const createRoles = async () => {
 };
 
 const createAnonymousUser = async () => {
-  await db.user.delete({
-    where: {
-      email: "anonymous@lebenswiki.com",
-    },
-  });
+  // await db.user.delete({
+  //   where: {
+  //     email: "anonymous@lebenswiki.com",
+  //   },
+  // });
+  await db.user.deleteMany();
   const user = await db.user.create({
     data: {
       name: "Anonymous User",
