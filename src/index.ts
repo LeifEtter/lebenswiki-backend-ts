@@ -84,8 +84,7 @@ async function main() {
       server.listen(port, (): void => {
         console.log(`Server started on port = ${port}`);
       });
-    }
-    if (environment == "DEVELOPMENT") {
+    } else if (environment == "DEVELOPMENT") {
       app.listen(port, () => {
         console.log(`=================================`);
         console.log("Starting Node in Local Dev Mode");
