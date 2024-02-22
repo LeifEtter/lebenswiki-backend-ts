@@ -1,0 +1,247 @@
+[
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Inhalt des Bewerbungsschreibens" }
+      },
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Deine Motivation" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Erkläre, warum Du den Job unbedingt möchtest und begründe Deinen Wunsch. Erläutere, was Dich an dem Stellenangebot überzeugt hat und warum Du denkst, dass dieses Unternehmen das richtige ist. Schreibe Deine Motivation in die Einleitung, damit der Arbeitgeber erkennt, wie wichtig Dir die Bewerbung ist."
+        }
+      }
+    ],
+    "pageNumber": 1
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Deine Eignung" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Erkläre, warum du ideal für die Position bist. Gehe auf konkrete Erfolge und Errungenschaften von Dir ein, anstatt Behauptungen aufzustellen. Erläutere, wie Du die geforderten Qualifikationen bereits in anderen Positionen eingesetzt hast und wie Deine Arbeitsergebnisse überzeugen konnten. \nWenn Du noch keinen Job hattest, gehe auf Deine schulischen Leistungen ein oder soziales Engagement, dass Du betreibst."
+        }
+      }
+    ],
+    "pageNumber": 2
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Mehrwert für den Arbeitgeber" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Überzeuge das Unternehmen davon, dass Du Eigenschaften mitbringst, die niemand anderes hat und die Dich von anderen Bewerbern abheben. Die Personalabteilung soll davon ausgehen, dass Sie nur davon profitieren können Dich einzustellen."
+        }
+      }
+    ],
+    "pageNumber": 3
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Wichtige Tipps für das Anschreiben" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Wichtig für das Bewerbungsschreiben ist, dass es gut lesbar am besten am Computer abgetippt ist und die Rechtschreibung stimmt.\n\nFolgende Tipps könnten Dir beim Anschreiben helfen:"
+        }
+      }
+    ],
+    "pageNumber": 4
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Authentisch bleiben" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Der Arbeitgeber will wissen, was für eine Person hinter der Bewerbung steckt. Bleibe deshalb authentisch und glaubwürdig. Kopiere nicht einfach vorgefertigte Texte aus dem Internet. Vertraue auf Deine eigenen Argumente."
+        }
+      }
+    ],
+    "pageNumber": 5
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Einheitliche Gestaltung der Bewerbung" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Das Bewerbungsschreiben muss zu den anderen Bewerbungsunterlagen passen. Verwende daher einheitliche Schriftart und Größe, Farben und Stil-Elemente. Halte Dich an die Vorgaben des Arbeitgebers und überprüfe welche Dokumente und Informationen gefordert sind.\nVergiss nicht Deine Unterschrift am Ende des Anschreibens hinzuzufügen."
+        }
+      }
+    ],
+    "pageNumber": 6
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Stellenangebot analysieren" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Welche Fähigkeiten und Stärken sind gewünscht? Betone diese Punkte im Hauptteil des Schreibens. Schaue Dir am besten die Unternehmenswebseite an und informiere Dich über aktuelle Projekte und bekomme einen Eindruck von den Mitarbeitern und Deinem potentiellen Arbeitgeber."
+        }
+      }
+    ],
+    "pageNumber": 7
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Ansprechpartner recherchieren" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Finde heraus, wer sich das Bewerbungsschreiben durchliest. Oft findest Du den Namen in der Stellenanzeige. Sprich diese Person in der Anrede des Anschreibens persönlich an. Das wirkt selbstbewusst und kontaktfreudig."
+        }
+      }
+    ],
+    "pageNumber": 8
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Persönlichen Bezug herstellen" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Hast Du den Personalverantwortlichen schon persönlich kennengelernt beispielsweise auf einer Messe oder in einem Telefonat? Verweise in der Einleitung auf diesen Kontakt. Das hebt Dich von den anderen Bewerbern ab."
+        }
+      }
+    ],
+    "pageNumber": 9
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Deutlich formulieren" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Das Bewerbungsschreiben sollte nicht eine Din A4 Seite überschreiten. Bringe Deine Argumente in klarer Sprache auf den Punkt. Der Arbeitgeber muss eventuell eine Vielzahl an Bewerbungen durchlesen und hat keine Zeit für lange Texte."
+        }
+      }
+    ],
+    "pageNumber": 10
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Überzeugendes Argument direkt in der Einleitung"
+        }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Starte Deine Einleitung direkt mit einem starken Argument. Das hilft die Aufmerksamkeit des Lesers auf Dein Schreiben zu ziehen und zeigt, dass Du es ernst meinst."
+        }
+      }
+    ],
+    "pageNumber": 11
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Beispiele" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Es ist leicht Behauptungen aufzustellen, die die geforderten Qualifikationen bestätigen. Um glaubwürdig zu erscheinen, ist es gut, wenn Du Beispiele nennst. Sag nicht einfach nur, dass Du teamfähig bist, sondern nenne Beispiele, wo Du es unter Beweis gestellt hast. \n\nZum Beispiel auf der Arbeit, in der Schule oder im Praktikum."
+        }
+      }
+    ],
+    "pageNumber": 12
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Zeige Dich" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Erzähle nicht Deinen Lebenslauf nach, indem Du erläuterst auf welcher Schule Du warst und wo Du welche Praktika absolviert hast. Das weiß der Arbeitgeber bereits, wenn Du Deinen Lebenslauf mit Deiner Bewerbung mitgeschickt hast.\n\nDas Unternehmen will wissen, wer sich hinter den Daten als Person verbirgt. Gehe daher besonders auf Deine Soft Skills ein, da Du diese gut mit Beispielen untermauern kannst."
+        }
+      }
+    ],
+    "pageNumber": 13
+  },
+  {
+    "items": [
+      {
+        "type": "ItemType.title",
+        "bodyContent": [],
+        "headContent": { "value": "Konjunktiv nicht verwenden" }
+      },
+      {
+        "type": "ItemType.text",
+        "bodyContent": [],
+        "headContent": {
+          "value": "Du würdest Dich nicht über eine Rückmeldung freuen, sondern Du freust Dich über eine positive Rückmeldung. Lasse keine Zweifel an Deiner Qualifikation für den Job aufkommen. Beende das Anschreiben mit Selbstbewusstsein. Das macht Eindruck auf den Arbeitgeber."
+        }
+      }
+    ],
+    "pageNumber": 14
+  }
+]
