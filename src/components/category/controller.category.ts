@@ -29,6 +29,11 @@ export const getAllCategories: Middleware = async (req, res) => {
     const categoriesForReturn: CategoryForResponse[] = categories.map((cat) =>
       convertCategoryForResponse(cat),
     );
+    const allPacksCategory: CategoryForResponse = {
+      id: 0,
+      name: "Alle",
+    };
+    categoriesForReturn.unshift(allPacksCategory);
     return res.status(200).send(categoriesForReturn);
   } catch (err) {
     console.log(err);

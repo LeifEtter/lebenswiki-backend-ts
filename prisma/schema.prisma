@@ -203,7 +203,7 @@ model User {
   password                        String
   name                            String
   isFirstLogin                    Boolean    @default(true)
-  profileImage                    String?    @db.Text
+  avatar                          String?    @db.Text
   biography                       String     @db.Text
   role                            Role?      @relation(fields: [roleId], references: [id], onDelete: SetNull)
   roleId                          Int?       @default(2)

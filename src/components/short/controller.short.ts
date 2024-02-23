@@ -60,7 +60,7 @@ export const createShort: Middleware = async (req, res) => {
         },
       },
     });
-    return res.status(200).send({
+    return res.status(201).send({
       message: `Short was created and ${
         canPublishImmediately ? "requested to be" : ""
       } published`,

@@ -120,39 +120,49 @@ export const login: Middleware = async (req, res) => {
   }
 };
 
-export const updateProfile: Middleware = async (req, res) => {
+export const updatePassword: Middleware = async (req, res) => {
   try {
-    const { name, password, biography, oldPassword } = req.body;
-    //TODO temporarily allow password change for admins
-    if (password && res.locals.user.role.level < 10) {
-      if (!oldPassword) {
-        return res.status(401).send({
-          message:
-            "Please supply your old password in order to reset your password.",
-        });
-      }
-      const existingUser = await db.user.findUniqueOrThrow({
-        where: { id: res.locals.user.id },
+    const { password, oldPassword } = req.body;
+    if (!oldPassword) {
+      return res.status(401).send({
+        message:
+          "Please supply your old password in order to reset your password.",
       });
-      const passwordsMatch: boolean = await bcrypt.compare(
-        oldPassword,
-        existingUser?.password,
-      );
-      if (!passwordsMatch) {
-        return res
-          .status(401)
-          .send({ message: "Old password supplied doesn't match" });
-      }
+    }
+    const existingUser = await db.user.findUniqueOrThrow({
+      where: { id: res.locals.user.id },
+    });
+    const passwordsMatch: boolean = await bcrypt.compare(
+      oldPassword,
+      existingUser?.password,
+    );
+    if (!passwordsMatch) {
+      return res
+        .status(401)
+        .send({ message: "Old password supplied doesn't match" });
     }
     const encryptedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    await db.user.update({
+      where: { id: res.locals.user.id },
+      data: { password: encryptedPassword },
+    });
+    return res.status(200).send({ message: "Password updated successfully" });
+  } catch (error) {
+    return handleError({ res, error, rName: "User", rId: res.locals.user.id });
+  }
+};
+
+export const updateProfile: Middleware = async (req, res) => {
+  try {
+    const { name, biography, avatar } = req.body;
     await db.user.update({
       where: {
         id: res.locals.user.id,
       },
       data: {
         name,
-        password: encryptedPassword,
         biography,
+        avatar,
       },
     });
     return res.status(200).send({ message: "Profile Updated" });
@@ -169,8 +179,7 @@ export const showProfile: Middleware = async (req, res) => {
       },
     });
     const userForResponse = await convertUserForResponse(user);
-    userForResponse.avatar = await getSignedUrlForAvatar(user.id);
-    return res.status(200).send(user);
+    return res.status(200).send(userForResponse);
   } catch (error) {
     console.log(error);
     return res.status(501).send({

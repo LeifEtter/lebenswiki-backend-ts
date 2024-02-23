@@ -54,6 +54,7 @@ export type PackFromQuery = Prisma.PackGetPayload<{
 export type PackForResponse = {
   id: number;
   title: string;
+  titleImage: string;
   description: string;
   initiative: string;
   readProgress: number;

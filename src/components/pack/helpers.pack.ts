@@ -8,6 +8,7 @@ import { convertCategoryForResponse } from "../category/helpers.category";
 import { UserForResponse } from "../user/type.user";
 import { convertCommentForResponse } from "../comment/helper.comment";
 import { CommentForResponse } from "../comment/type.comment";
+import { getSignedUrlForPack } from "../image/controller.image";
 
 const checkIfUserHasBookmarked = (userId: number, bookmarks: User[]) => {
   const bookmarkMadeByUser = bookmarks.filter((user) => user.id == userId);
@@ -65,6 +66,7 @@ export const convertPackForResponse = async ({
       ),
     );
   }
+  const titleImage: string = await getSignedUrlForPack(pack.id);
   return {
     id: pack.id,
     title: pack.title,
@@ -79,6 +81,7 @@ export const convertPackForResponse = async ({
     userHasClapped,
     categories,
     totalClaps,
+    titleImage,
     comments: comments.length != 0 ? comments : undefined,
     pagesNew: includePages ? pack.pagesNew : undefined,
     published: pack.published,
