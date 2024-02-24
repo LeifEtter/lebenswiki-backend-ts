@@ -94,14 +94,14 @@ export const login: Middleware = async (req, res) => {
     });
     const isFirstLogin: boolean = user.isFirstLogin;
     if (isFirstLogin) {
-      // await db.user.update({
-      //   where: {
-      //     id: user.id,
-      //   },
-      //   data: {
-      //     isFirstLogin: false,
-      //   },
-      // });
+      await db.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          isFirstLogin: false,
+        },
+      });
     }
 
     res.status(200);
