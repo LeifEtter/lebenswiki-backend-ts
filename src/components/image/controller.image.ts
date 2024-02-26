@@ -8,7 +8,6 @@ import {
 } from "@aws-sdk/client-s3";
 import multer = require("multer");
 import { Middleware } from "express-validator/src/base";
-const upload = multer();
 
 const client = new S3Client({
   region: "eu-central-1",
@@ -31,8 +30,7 @@ export const checkIfObjectExists = async (path: string): Promise<boolean> => {
       Bucket: "lebenswiki-storage",
       Key: path,
     });
-    console.log(await client.send(command));
-    return true;
+    return (await client.send(command)).$metadata.httpStatusCode == 200;
   } catch (error) {
     console.log(error);
     return false;
@@ -51,7 +49,10 @@ export const getSignedUrlForPack = async (packId: number): Promise<string> => {
     : await getSignedUrlForImageViewing(`packs/placeholder_pack-title.png`);
 };
 
-const uploadImageToS3 = async (path: string, blob: Buffer): Promise<void> => {
+export const uploadImageToS3 = async (
+  path: string,
+  blob: Buffer,
+): Promise<void> => {
   const command = new PutObjectCommand({
     Bucket: "lebenswiki-storage",
     Key: path,

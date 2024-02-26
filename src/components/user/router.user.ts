@@ -22,8 +22,16 @@ const router: Router = Router();
 router.route("/checkToken").get(authenticate, minLevel(2), checkToken);
 
 router.route("/register").post(
-  body(["email", "password", "name", "biography"]).exists().isString().escape(),
+  body("email").exists().escape().isEmail(),
+  body("password").exists().escape().isStrongPassword({
+    minSymbols: 1,
+    minUppercase: 1,
+    minLength: 6,
+  }),
+  body("name").exists().escape().isString().isLength({ min: 3 }),
+  body("biography").escape().isString(),
   checkValidatorResult({
+    resource: "User",
     msg: "Please make sure you are passing an email, password, name and biography.",
   }),
   register,
@@ -32,12 +40,24 @@ router.route("/register").post(
 router.route("/login").post(
   body(["email", "password"]).exists().isString().escape(),
   checkValidatorResult({
+    resource: "User",
     msg: "Please make sure you are passing an email and a password.",
   }),
   login,
 );
 
-router.route("/profile/update").patch(authenticate, minLevel(2), updateProfile);
+router.route("/profile/update").patch(
+  authenticate,
+  body("email").escape().isEmail(),
+  body("name").escape().isString().isLength({ min: 3 }),
+  body("biography").escape().isString(),
+  checkValidatorResult({
+    resource: "User",
+    msg: "Please make sure that Email, Name and Biography are formatted correctly",
+  }),
+  minLevel(2),
+  updateProfile,
+);
 
 router.route("/profile").get(authenticate, minLevel(2), showProfile);
 

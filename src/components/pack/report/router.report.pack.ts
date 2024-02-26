@@ -15,6 +15,7 @@ router.route("/create/:id").post(
   authenticate,
   body("reason").exists().isString(),
   checkValidatorResult({
+    resource: "Report",
     msg: "Please make sure you are passing a 'reason' as a string.",
   }),
   reportPack,

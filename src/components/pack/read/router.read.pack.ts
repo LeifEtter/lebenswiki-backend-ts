@@ -16,6 +16,7 @@ router.route("/update/:id").patch(
   authenticate,
   body("progress").exists().isNumeric(),
   checkValidatorResult({
+    resource: "Read",
     msg: "Please make sure to pass 'progress' with an integer",
   }),
   updateReadForPack,
@@ -27,6 +28,7 @@ router.route("/create/:id").post(
   authenticate,
   body("progress").exists().isNumeric(),
   checkValidatorResult({
+    resource: "Read",
     msg: "Please make sure to pass 'progress' with an integer",
   }),
   createReadForPack,

@@ -87,8 +87,7 @@ model Pack {
   title                     String
   description               String     @db.Text
   published                 Boolean    @default(false)
-  pages                     Json?
-  pagesNew                  PackPage[]
+  pages                     PackPage[]
   creatorId                 Int?
   titleImage                String?    @db.Text
   reactions                 Json

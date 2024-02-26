@@ -1,9 +1,4 @@
-import { Router } from "express";
 import db from "../../../database/database";
-import { body } from "express-validator";
-import { checkValidId } from "../../../middleware/validation.middleware";
-
-import authenticate from "../../../middleware/authentication.middleware";
 import { Prisma } from "@prisma/client";
 import { handleError } from "../../error/helper.error";
 import { Middleware } from "express-validator/src/base";
@@ -64,6 +59,6 @@ export const createReadForPack: Middleware = async (req, res) => {
       .status(201)
       .send({ message: "Read Pack successfully", read: readResult });
   } catch (error) {
-    return handleError({ error, res, rName: "Pack", rId: res.locals.id });
+    return handleError({ error, res, rName: "Pack" });
   }
 };

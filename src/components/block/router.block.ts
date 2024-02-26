@@ -17,6 +17,7 @@ router.route("/create/:id").post(
   minLevel(2),
   body("reason").exists().isString().escape(),
   checkValidatorResult({
+    resource: "Block",
     msg: "Please make sure you're passing a 'reason', as a string.",
   }),
   blockUser,

@@ -18,6 +18,6 @@ export const createFeedBack: Middleware = async (req, res) => {
     });
     return res.status(201).send({ message: "Feedback created" });
   } catch (error) {
-    return handleError({ error, res, rName: "Feedback", rId: 0 });
+    return handleError({ error, res, rName: "Feedback" });
   }
 };

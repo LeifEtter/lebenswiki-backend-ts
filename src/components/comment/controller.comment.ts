@@ -26,7 +26,7 @@ export const createCommentForShort: Middleware = async (req, res) => {
       commentId: commentResult.id,
     });
   } catch (error) {
-    return handleError({ res, rName: "Short", rId: res.locals.id, error });
+    return handleError({ res, rName: "Short", error });
   }
 };
 
@@ -54,7 +54,7 @@ export const createCommentForPack: Middleware = async (req, res) => {
       commentId: commentResult.id,
     });
   } catch (error) {
-    return handleError({ res, rName: "Pack", rId: res.locals.id, error });
+    return handleError({ res, rName: "Pack", error });
   }
 };
 
@@ -86,7 +86,6 @@ export const createSubcomment: Middleware = async (req, res) => {
       res,
       error,
       rName: "Subcomment",
-      rId: res.locals.id,
     });
   }
 };
@@ -106,7 +105,7 @@ export const deleteComment: Middleware = async (req, res) => {
       error,
       res,
       rName: "Comment",
-      rId: res.locals.id,
+
       message:
         "Something went wrong while deleting your comment, please contact us immediately if it needs to be removed",
     });
@@ -130,7 +129,7 @@ export const reportComment: Middleware = async (req, res) => {
       res,
       error,
       rName: "Comment",
-      rId: res.locals.id,
+
       message:
         "Failed to delete Pack, please contact support immediately if you need the pack removed or unpublished",
     });
@@ -156,7 +155,7 @@ export const downvoteComment: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "Comment downvoted" });
   } catch (error) {
-    return handleError({ rName: "Comment", rId: res.locals.id, res, error });
+    return handleError({ rName: "Comment", res, error });
   }
 };
 
@@ -179,7 +178,7 @@ export const upvoteComment: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "Comment upvoted" });
   } catch (error) {
-    return handleError({ rName: "Comment", rId: res.locals.id, res, error });
+    return handleError({ rName: "Comment", res, error });
   }
 };
 
@@ -204,6 +203,6 @@ export const removeVoteForComment: Middleware = async (req, res) => {
       .status(200)
       .send({ message: "Vote removed from comment successfully" });
   } catch (error) {
-    return handleError({ rName: "Comment", rId: res.locals.id, res, error });
+    return handleError({ rName: "Comment", res, error });
   }
 };

@@ -26,6 +26,7 @@ router.route("/subcomment/:id").post(
   minLevel(2),
   body("comment").exists().isString().escape(),
   checkValidatorResult({
+    resource: "Comment",
     msg: "Make sure you are passing a 'comment' as a string.",
   }),
   createSubcomment,
@@ -41,6 +42,7 @@ router.route("/report/:id").post(
   minLevel(2),
   body("reason").exists().isString(),
   checkValidatorResult({
+    resource: "Comment",
     msg: "Make sure you are passing a 'reason' as a string.",
   }),
   reportComment,
@@ -52,6 +54,7 @@ router.route("/pack/:id").post(
   minLevel(2),
   body("comment").exists().isString().escape(),
   checkValidatorResult({
+    resource: "Comment",
     msg: "Please make sure you are passing a 'comment' as a string",
   }),
 
@@ -65,6 +68,7 @@ router.route("/short/:id").post(
   minLevel(2),
   body("comment").exists().isString().escape(),
   checkValidatorResult({
+    resource: "Comment",
     msg: "Please make sure you are passing a 'comment' as a string",
   }),
   createCommentForShort,

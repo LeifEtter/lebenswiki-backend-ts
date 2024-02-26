@@ -16,6 +16,8 @@ import {
   publishPack,
   unpublishPack,
   updatePack,
+  updatePages,
+  uploadPackImage,
   viewPack,
 } from "./controller.pack";
 import {
@@ -37,16 +39,20 @@ router.use("/bookmark", BookmarkRouter);
 router.route("/create").post(
   authenticate,
   minLevel(3),
-  body(["title", "description"]).exists().isString().escape(),
-  body(["initiative"]).exists().isString().escape(),
-  body(["categories"]).exists().isArray(),
-  body(["categories.*", "readTime"]).isNumeric(),
-  // NOT SAFE IF SOMEBODY CAN ACCESS CREATOR ACCOUNT
-  body(["pages"]).exists(),
+  body("title").exists().escape().isString().isLength({ min: 10, max: 100 }),
+  body("description")
+    .exists()
+    .escape()
+    .isString()
+    .isLength({ min: 10, max: 500 }),
+  body("initiative").escape().isString(),
+  body("categories").exists().isArray(),
+  body("readTime").exists().isFloat({ min: 1 }),
+  body("pages").exists(),
   checkValidatorResult({
+    resource: "Pack",
     msg: "Please make sure you are passing a title, description, initiative, categories as a list of numbers id's (numbers) and pages in the form of JSON.",
   }),
-  upload.single("coverImage"),
   createPack,
 );
 
@@ -54,16 +60,24 @@ router.route("/update/:id").put(
   checkValidId,
   authenticate,
   minLevel(3),
-  body(["title", "description"]).exists().isString().escape(),
-  body(["initiative"]).exists().isString().escape(),
-  body(["categories"]).exists().isArray(),
-  body(["categories.*", "readTime"]).isNumeric(),
-  body(["pages"]).exists().isJSON().escape(),
+  body("title").escape().isString().isLength({ min: 10, max: 100 }),
+  body("description").escape().isString().isLength({ min: 10, max: 500 }),
+  body("initiative").escape().isString(),
+  body("categories").isArray(),
+  body("readTime").isFloat({ min: 1 }),
+  body("pages").isArray(),
   checkValidatorResult({
+    resource: "Pack",
     msg: "Please make sure you are passing a title, description, initiative, categories as a list of numbers id's (numbers) and pages in the form of JSON.",
   }),
   updatePack,
 );
+
+router
+  .route("/update/pages/:id")
+  .patch(checkValidId, authenticate, minLevel(3), updatePages);
+
+router.route("/page/image/upload/:id").post();
 
 router.route("/view/:id").get(checkValidId, authenticate, viewPack);
 
@@ -95,5 +109,9 @@ router
   .patch(checkValidId, authenticate, minLevel(2), clapForPack);
 
 router.route("/categorized").get(authenticate, getAllPacksWithCategories);
+
+router
+  .route("/image/upload/:id")
+  .post(checkValidId, upload.single("image"), uploadPackImage);
 
 export default router;

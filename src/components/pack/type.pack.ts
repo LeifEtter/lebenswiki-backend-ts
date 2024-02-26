@@ -23,7 +23,7 @@ export type PackFromQuery = Prisma.PackGetPayload<{
         categoryName: true;
       };
     };
-    pagesNew: {
+    pages: {
       select: {
         id: true;
         pageNumber: true;
@@ -66,7 +66,7 @@ export type PackForResponse = {
   userHasClapped: boolean;
   totalBookmarks: number;
   totalClaps: number;
-  pagesNew?: PackPageForResponse[];
+  pages: PackPageForResponse[];
   comments?: CommentForResponse[];
   published: boolean;
 };

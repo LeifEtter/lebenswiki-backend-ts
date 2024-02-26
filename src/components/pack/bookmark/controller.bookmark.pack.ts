@@ -21,7 +21,7 @@ export const bookmarkPack: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "Successfully bookmarked pack" });
   } catch (error) {
-    return handleError({ res, error, rName: "Pack", rId: res.locals.id });
+    return handleError({ res, error, rName: "Pack" });
   }
 };
 
@@ -43,7 +43,7 @@ export const removeBookmarkFromPack: Middleware = async (req, res) => {
       .status(200)
       .send({ message: "Successfully removed Bookmark from the Pack" });
   } catch (error) {
-    return handleError({ res, error, rName: "Pack", rId: res.locals.id });
+    return handleError({ res, error, rName: "Pack" });
   }
 };
 
@@ -62,6 +62,6 @@ export const getBookmarkedPacks: Middleware = async (req, res) => {
     });
     return res.status(200).send(packs);
   } catch (error) {
-    return handleError({ error, res, rName: "Bookmakred Packs", rId: 0 });
+    return handleError({ error, res, rName: "Bookmakred Packs" });
   }
 };

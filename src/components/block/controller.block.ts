@@ -13,6 +13,7 @@ export const removeBlock: Middleware = async (req, res) => {
     });
     if (!blocked) {
       return res.status(404).send({
+        id: 10,
         message: "Couldn't unblock user, you may have not blocked him",
       });
     } else {
@@ -28,6 +29,7 @@ export const removeBlock: Middleware = async (req, res) => {
     }
   } catch (error) {
     return res.status(501).send({
+      id: 9,
       message:
         "You were unable to block the user, in case it's urgent please contact us immediately",
     });
@@ -37,7 +39,9 @@ export const removeBlock: Middleware = async (req, res) => {
 export const blockUser: Middleware = async (req, res) => {
   try {
     if (res.locals.id == res.locals.user.id) {
-      return res.status(400).send({ message: "You can't block yourself." });
+      return res
+        .status(400)
+        .send({ id: 12, message: "You can't block yourself" });
     }
     const alreadyBlocked = await db.block.findFirst({
       where: {
@@ -48,7 +52,7 @@ export const blockUser: Middleware = async (req, res) => {
     if (alreadyBlocked) {
       return res
         .status(400)
-        .send({ message: "You have already blocked this user" });
+        .send({ id: 11, message: "You have already blocked this user" });
     } else {
       await db.block.create({
         data: {
@@ -62,7 +66,7 @@ export const blockUser: Middleware = async (req, res) => {
       });
     }
   } catch (error) {
-    return handleError({ error, rName: "User", rId: res.locals.id, res });
+    return handleError({ error, rName: "User", res });
   }
 };
 
@@ -92,7 +96,6 @@ export const getMyBlocks: Middleware = async (req, res) => {
       res,
       error,
       rName: "Blocked User",
-      rId: res.locals.user.id,
     });
   }
 };

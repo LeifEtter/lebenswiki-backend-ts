@@ -6,7 +6,6 @@ import {
   GENERIC_LOGIN_ERROR,
   GENERIC_REGISTRATION_ERROR,
 } from "../../constants/errorMessages";
-import { getSignedUrlForAvatar } from "../image/controller.image";
 import { handleError } from "../error/helper.error";
 import { Middleware } from "express-validator/src/base";
 import db = require("../../database/database");
@@ -30,13 +29,21 @@ export const checkToken: Middleware = async (req, res) => {
     const userForResponse: UserForResponse = await convertUserForResponse(user);
     return res.status(200).send(userForResponse);
   } catch (error) {
-    return handleError({ error, res, rName: "User", rId: res.locals.user.id });
+    return handleError({ error, res, rName: "User" });
   }
 };
 
 export const register: Middleware = async (req, res) => {
   try {
     const { email, password, name, biography } = req.body;
+    if ((await db.user.findUnique({ where: { email } })) != null) {
+      return res
+        .status(400)
+        .send({
+          id: 117,
+          message: "User with this email address already exists",
+        });
+    }
     const encryptedPassword: string = await bcrypt.hash(password, SALT_ROUNDS);
     const user: User | null = await db.user.create({
       data: {
@@ -55,7 +62,6 @@ export const register: Middleware = async (req, res) => {
       res,
       error,
       rName: "User",
-      rId: res.locals.user.id,
       message: GENERIC_REGISTRATION_ERROR,
     });
   }
@@ -148,7 +154,7 @@ export const updatePassword: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "Password updated successfully" });
   } catch (error) {
-    return handleError({ res, error, rName: "User", rId: res.locals.user.id });
+    return handleError({ res, error, rName: "User" });
   }
 };
 
@@ -167,7 +173,7 @@ export const updateProfile: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "Profile Updated" });
   } catch (error) {
-    return handleError({ error, res, rName: "User", rId: 0 });
+    return handleError({ error, res, rName: "User" });
   }
 };
 
@@ -199,7 +205,7 @@ export const deleteUser: Middleware = async (req, res) => {
       res,
       error,
       rName: "User",
-      rId: res.locals.user.id,
+
       message:
         "Something went wrong while trying to delete your account, please contact us immediately.",
     });
@@ -222,7 +228,7 @@ export const getUsersProfile: Middleware = async (req, res) => {
       },
     });
     const packs: PackForResponse[] = await getPacksForReturn({
-      where: { creatorId: res.locals.id, published: true },
+      where: { creatorId: res.locals.user.id, published: true },
       userId: res.locals.user.id,
       blockList: await getBlocksAsIdList(res.locals.user.id),
     });
@@ -238,7 +244,7 @@ export const getUsersProfile: Middleware = async (req, res) => {
       packs: packs,
     });
   } catch (error) {
-    return handleError({ error, res, rName: "User", rId: res.locals.id });
+    return handleError({ error, res, rName: "User" });
   }
 };
 

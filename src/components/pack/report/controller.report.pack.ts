@@ -19,7 +19,7 @@ export const reportPack: Middleware = async (req, res) => {
       reportId: report.id,
     });
   } catch (error) {
-    return handleError({ res, error, rName: "Pack", rId: res.locals.id });
+    return handleError({ res, error, rName: "Pack" });
   }
 };
 
@@ -35,6 +35,6 @@ export const getPackReports: Middleware = async (req, res) => {
     });
     return res.status(200).send({ reports });
   } catch (error) {
-    return handleError({ res, error, rName: "Pack", rId: res.locals.id });
+    return handleError({ res, error, rName: "Pack" });
   }
 };

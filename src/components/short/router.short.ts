@@ -27,8 +27,11 @@ router.route("/categorized").get(authenticate, getAllShortsWithCategories);
 router.route("/create").post(
   authenticate,
   minLevel(2),
-  body(["title", "content"]).exists().isString().escape(),
+  body("title").exists().escape().isString().isLength({ min: 10, max: 100 }),
+  body("content").exists().escape().isString().isLength({ min: 10, max: 500 }),
+  body("category").exists().isArray(),
   checkValidatorResult({
+    resource: "Short",
     msg: "Please make sure you're passing 'title' and 'content' as strings.",
   }),
   createShort,

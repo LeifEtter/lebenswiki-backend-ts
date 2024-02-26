@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { PackPage, PrismaClient, User } from "@prisma/client";
 const db = new PrismaClient();
 
 const createRoles = async () => {
@@ -70,6 +70,8 @@ const createCategories = async () => {
     ],
   });
 };
+
+const createPacks = async () => {};
 
 async function main() {
   try {

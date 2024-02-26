@@ -33,7 +33,7 @@ export const getAllShorts: Middleware = async (req, res) => {
     );
     return res.status(200).send(shortsToReturn);
   } catch (error) {
-    return handleError({ rName: "Short", rId: 0, res, error });
+    return handleError({ rName: "Short", res, error });
   }
 };
 
@@ -66,7 +66,7 @@ export const createShort: Middleware = async (req, res) => {
       } published`,
     });
   } catch (error) {
-    return handleError({ rName: "Short", rId: 0, error, res });
+    return handleError({ rName: "Short", error, res });
   }
 };
 
@@ -80,7 +80,7 @@ export const deleteShort: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "Short deleted successfully" });
   } catch (error) {
-    return handleError({ error, res, rName: "Short", rId: res.locals.id });
+    return handleError({ error, res, rName: "Short" });
   }
 };
 
@@ -104,7 +104,7 @@ export const getOwnPublishedShorts: Middleware = async (req, res) => {
     );
     return res.status(200).send(shortsForResponse);
   } catch (error) {
-    return handleError({ res, error, rName: "Published Shorts", rId: 0 });
+    return handleError({ res, error, rName: "Published Shorts" });
   }
 };
 
@@ -128,7 +128,7 @@ export const getOwnUnpublishedShorts: Middleware = async (req, res) => {
     );
     return res.status(200).send(shortsForResponse);
   } catch (error) {
-    return handleError({ res, error, rName: "Published Shorts", rId: 0 });
+    return handleError({ res, error, rName: "Published Shorts" });
   }
 };
 
@@ -166,7 +166,7 @@ export const getAllShortsWithCategories: Middleware = async (req, res) => {
     categorizedShorts.unshift(allShortsCategory);
     return res.status(200).send(categorizedShorts);
   } catch (error) {
-    return handleError({ res, error, rName: "Short", rId: 0 });
+    return handleError({ res, error, rName: "Short" });
   }
 };
 
@@ -184,7 +184,7 @@ export const clapForShort: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "Clapped for Short" });
   } catch (error) {
-    return handleError({ res, error, rName: "Short", rId: res.locals.id });
+    return handleError({ res, error, rName: "Short" });
   }
 };
 
@@ -198,7 +198,7 @@ export const publishShort: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "Short published" });
   } catch (error) {
-    return handleError({ res, error, rName: "Short", rId: 0 });
+    return handleError({ res, error, rName: "Short" });
   }
 };
 
@@ -212,6 +212,6 @@ export const unpublishShort: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "Short unpublished" });
   } catch (error) {
-    return handleError({ res, error, rName: "Short", rId: 0 });
+    return handleError({ res, error, rName: "Short" });
   }
 };

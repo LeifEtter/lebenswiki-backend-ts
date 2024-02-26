@@ -1,5 +1,4 @@
 import db from "../../database/database";
-import { Router } from "express";
 import { handleError } from "../error/helper.error";
 import { getPacksForReturn } from "../pack/helpers.pack";
 import { getBlocksAsIdList } from "../block/helpers.block";
@@ -12,8 +11,6 @@ import {
 import { CategoryForResponse } from "./type.category";
 import { convertCategoryForResponse } from "./helpers.category";
 import { PackForResponse } from "../pack/type.pack";
-
-const router: Router = Router();
 
 export const getAllCategories: Middleware = async (req, res) => {
   try {
@@ -57,7 +54,7 @@ export const getPacksForCategory: Middleware = async (req, res) => {
     });
     return res.status(200).send(packs);
   } catch (error) {
-    return handleError({ error, res, rName: "Packs", rId: res.locals.id });
+    return handleError({ error, res, rName: "Packs" });
   }
 };
 
@@ -87,7 +84,7 @@ export const getShortsForCategory: Middleware = async (req, res) => {
     );
     return res.status(200).send(shortsToReturn);
   } catch (error) {
-    return handleError({ rName: "Short", rId: 0, res, error });
+    return handleError({ rName: "Short", res, error });
   }
 };
 
@@ -146,6 +143,6 @@ export const getAllPacksAndShortsWithCategories: Middleware = async (
     categorizedPacksAndShorts.unshift(allPacksAndShortsCategory);
     return res.status(200).send(categorizedPacksAndShorts);
   } catch (error) {
-    return handleError({ res, error, rName: "Pack", rId: 0 });
+    return handleError({ res, error, rName: "Pack" });
   }
 };

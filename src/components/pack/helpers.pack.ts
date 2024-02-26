@@ -83,7 +83,7 @@ export const convertPackForResponse = async ({
     totalClaps,
     titleImage,
     comments: comments.length != 0 ? comments : undefined,
-    pagesNew: includePages ? pack.pagesNew : undefined,
+    pages: pack.pages,
     published: pack.published,
   };
 };
@@ -134,7 +134,7 @@ export const getPacksForReturn = async ({
             User_Comment_creatorIdToUser: true,
           },
         },
-        pagesNew: {
+        pages: {
           select: {
             id: true,
             pageNumber: true,
