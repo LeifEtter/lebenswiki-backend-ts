@@ -83,11 +83,11 @@ router.route("/own/published").get(authenticate, minLevel(3), getOwnPublished);
 
 router
   .route("/own/publish/:id")
-  .get(checkValidId, authenticate, minLevel(3), publishPack);
+  .patch(checkValidId, authenticate, minLevel(3), publishPack);
 
 router
   .route("/own/unpublish/:id")
-  .get(checkValidId, authenticate, minLevel(3), unpublishPack);
+  .patch(checkValidId, authenticate, minLevel(3), unpublishPack);
 
 router.route("/unreads").get(authenticate, getUnreadPacks);
 router.route("/reads").get(authenticate, getReadPacks);

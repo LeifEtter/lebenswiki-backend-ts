@@ -29,7 +29,7 @@ router.route("/create").post(
   minLevel(2),
   body("title").exists().escape().isString().isLength({ min: 10, max: 100 }),
   body("content").exists().escape().isString().isLength({ min: 10, max: 500 }),
-  body("category").exists().isArray(),
+  body("categories").exists().isArray(),
   checkValidatorResult({
     resource: "Short",
     msg: "Please make sure you're passing 'title' and 'content' as strings.",

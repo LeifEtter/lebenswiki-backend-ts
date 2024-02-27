@@ -53,9 +53,7 @@ export const createShort: Middleware = async (req, res) => {
           },
         },
         Category: {
-          connect: categories.map((cat: CategoryForResponse) => ({
-            id: cat.id,
-          })),
+          connect: categories.map((cat: CategoryForResponse) => cat),
         },
       },
     });
