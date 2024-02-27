@@ -109,7 +109,7 @@ model Pack {
 }
 
 model PackPage {
-  id         Int            @unique @default(autoincrement())
+  id         String         @unique
   pageNumber Int
   packId     Int
   pack       Pack           @relation(fields: [packId], references: [id], onDelete: Cascade)
@@ -117,26 +117,27 @@ model PackPage {
 }
 
 model PackPageItem {
-  id          Int                       @unique @default(autoincrement())
+  id          String                    @unique @default(uuid())
   type        String
   headContent PackPageItemHeadContent?
   bodyContent PackPageItemBodyContent[]
   PackPage    PackPage                  @relation(fields: [packPageId], references: [id], onDelete: Cascade)
-  packPageId  Int
+  packPageId  String
+  position    Int
 }
 
 model PackPageItemHeadContent {
-  id       Int           @unique @default(autoincrement())
+  id       String        @unique
   value    String        @db.Text
   parent   PackPageItem? @relation(fields: [parentId], references: [id], onDelete: Cascade)
-  parentId Int?          @unique
+  parentId String?       @unique
 }
 
 model PackPageItemBodyContent {
-  id             Int          @unique @default(autoincrement())
+  id             String       @unique
   value          String
   parent         PackPageItem @relation(fields: [packPageItemId], references: [id], onDelete: Cascade)
-  packPageItemId Int
+  packPageItemId String
 }
 
 model Read {

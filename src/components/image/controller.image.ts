@@ -40,7 +40,7 @@ export const checkIfObjectExists = async (path: string): Promise<boolean> => {
 export const getSignedUrlForAvatar = async (userId: number): Promise<string> =>
   await getSignedUrlForImageViewing(`profiles/${userId}/avatar.png`);
 
-export const getSignedUrlForPack = async (packId: number): Promise<string> => {
+export const getSignedUrlForCover = async (packId: number): Promise<string> => {
   const objectExists: boolean = await checkIfObjectExists(
     `packs/${packId}/cover.png`,
   );
@@ -48,6 +48,14 @@ export const getSignedUrlForPack = async (packId: number): Promise<string> => {
     ? await getSignedUrlForImageViewing(`packs/${packId}/cover.png`)
     : await getSignedUrlForImageViewing(`packs/placeholder_pack-title.png`);
 };
+// export const getSignedUrlForPack = async (packId: number): Promise<string> => {
+//   const objectExists: boolean = await checkIfObjectExists(
+//     `packs/${packId}/cover.png`,
+//   );
+//   return objectExists
+//     ? await getSignedUrlForImageViewing(`packs/${packId}/cover.png`)
+//     : await getSignedUrlForImageViewing(`packs/placeholder_pack-title.png`);
+// };
 
 export const uploadImageToS3 = async (
   path: string,
@@ -60,7 +68,6 @@ export const uploadImageToS3 = async (
   });
   try {
     const result = await client.send(command);
-    console.log(result);
   } catch (error) {
     console.log("AWS Error while Uploading image: " + error);
     throw Error;
@@ -83,7 +90,6 @@ const deleteImageFromS3 = async (path: string) => {
 export const uploadAvatar: Middleware = async (req, res) => {
   try {
     const userId = res.locals.user.id;
-    console.log(req.file);
     await uploadImageToS3(`profiles/${userId}/avatar.png`, req.file!.buffer);
     const url = await getSignedUrlForAvatar(userId);
     return res

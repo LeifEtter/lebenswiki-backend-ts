@@ -1,14 +1,16 @@
 import { Prisma, User } from "@prisma/client";
 import { PackForResponse, PackFromQuery } from "./type.pack";
 import { CategoryForResponse } from "../category/type.category";
-import db, { block } from "../../database/database";
-import { getBlocksAsIdList } from "../block/helpers.block";
+import db from "../../database/database";
 import { convertUserForResponse } from "../user/helpers.user";
 import { convertCategoryForResponse } from "../category/helpers.category";
 import { UserForResponse } from "../user/type.user";
 import { convertCommentForResponse } from "../comment/helper.comment";
 import { CommentForResponse } from "../comment/type.comment";
-import { getSignedUrlForPack } from "../image/controller.image";
+import {
+  getSignedUrlForCover,
+  getSignedUrlForImageViewing,
+} from "../image/controller.image";
 
 const checkIfUserHasBookmarked = (userId: number, bookmarks: User[]) => {
   const bookmarkMadeByUser = bookmarks.filter((user) => user.id == userId);
@@ -66,7 +68,16 @@ export const convertPackForResponse = async ({
       ),
     );
   }
-  const titleImage: string = await getSignedUrlForPack(pack.id);
+  const titleImage: string = await getSignedUrlForCover(pack.id);
+  for (const page of pack.pages) {
+    for (const item of page.items) {
+      if (item.type == "ItemType.image") {
+        item.headContent!.value = await getSignedUrlForImageViewing(
+          `packs/${pack.id}/pages/${item.id}.png`,
+        );
+      }
+    }
+  }
   return {
     id: pack.id,
     title: pack.title,
@@ -140,6 +151,7 @@ export const getPacksForReturn = async ({
             pageNumber: true,
             items: {
               select: {
+                position: true,
                 id: true,
                 type: true,
                 headContent: {
@@ -177,97 +189,3 @@ export const getPacksForReturn = async ({
     throw error;
   }
 };
-
-type PackPage = {
-  pageNumber: number;
-  items: [];
-};
-
-type PackPageItem = {
-  type: string;
-  bodyContent?: PackPageItemContent[];
-  headContent?: PackPageItemContent;
-};
-
-type PackPageItemContent = {
-  value: string;
-};
-
-type SavePagesParams = {
-  isUpdate: boolean;
-  pagesJson: PackPage[];
-  packId: number;
-};
-
-export const savePages = async ({
-  isUpdate,
-  pagesJson,
-  packId,
-}: SavePagesParams) => {
-  try {
-    if (isUpdate) {
-      await db.packPage.deleteMany({
-        where: {
-          packId: packId,
-        },
-      });
-    }
-    for (const page of pagesJson) {
-      const createdPage = await db.packPage.create({
-        data: {
-          pageNumber: page.pageNumber,
-          pack: {
-            connect: {
-              id: packId,
-            },
-          },
-        },
-      });
-      const items: PackPageItem[] = page.items;
-      for (const item of items) {
-        if (item.headContent == null) {
-          throw "Please provide head content for every pack page item";
-        }
-        const createdHeadContent = await db.packPageItemHeadContent.create({
-          data: {
-            value: item.headContent.value,
-          },
-        });
-        const createdItem = await db.packPageItem.create({
-          data: {
-            type: item.type,
-            PackPage: {
-              connect: {
-                id: createdPage.id,
-              },
-            },
-            headContent: {
-              connect: {
-                id: createdHeadContent.id,
-              },
-            },
-          },
-        });
-        if (item.bodyContent) {
-          for (const bodyItem of item.bodyContent) {
-            await db.packPageItemBodyContent.create({
-              data: {
-                value: bodyItem.value,
-                parent: {
-                  connect: {
-                    id: createdItem.id,
-                  },
-                },
-              },
-            });
-          }
-        }
-      }
-    }
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
-
-//TODO Add Function for validating pages

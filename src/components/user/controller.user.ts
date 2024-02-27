@@ -37,12 +37,10 @@ export const register: Middleware = async (req, res) => {
   try {
     const { email, password, name, biography } = req.body;
     if ((await db.user.findUnique({ where: { email } })) != null) {
-      return res
-        .status(400)
-        .send({
-          id: 117,
-          message: "User with this email address already exists",
-        });
+      return res.status(400).send({
+        id: 117,
+        message: "User with this email address already exists",
+      });
     }
     const encryptedPassword: string = await bcrypt.hash(password, SALT_ROUNDS);
     const user: User | null = await db.user.create({

@@ -1,15 +1,14 @@
-import db, { block, pack } from "../../database/database";
-import { Router } from "express";
+import db from "../../database/database";
 import _ from "lodash";
 import { handleError } from "../error/helper.error";
 import { getBlocksAsIdList } from "../block/helpers.block";
-import { getPacksForReturn, savePages } from "./helpers.pack";
+import { getPacksForReturn } from "./helpers.pack";
 import { Middleware } from "express-validator/src/base";
 import { PackForResponse } from "./type.pack";
 import { Category } from "@prisma/client";
 import { CategoryForResponse } from "../category/type.category";
 import {
-  getSignedUrlForPack,
+  getSignedUrlForCover,
   uploadImageToS3,
 } from "../image/controller.image";
 
@@ -77,11 +76,6 @@ export const createPack: Middleware = async (req, res) => {
         },
       },
     });
-    await savePages({
-      packId: packResult.id,
-      pagesJson: pages,
-      isUpdate: false,
-    });
     const packsForResponse: PackForResponse[] = await getPacksForReturn({
       where: {
         id: packResult.id,
@@ -92,20 +86,6 @@ export const createPack: Middleware = async (req, res) => {
     return res.status(201).send(packsForResponse[0]);
   } catch (error) {
     return handleError({ res, error, rName: "Pack" });
-  }
-};
-
-export const updatePages: Middleware = async (req, res) => {
-  try {
-    const pages = req.body;
-    await savePages({
-      packId: res.locals.id,
-      pagesJson: pages,
-      isUpdate: true,
-    });
-    return res.status(200).send({ message: "Saved" });
-  } catch (error) {
-    return handleError({ error, res, rName: "Pack" });
   }
 };
 
@@ -319,7 +299,7 @@ export const clapForPack: Middleware = async (req, res) => {
 export const uploadPackImage: Middleware = async (req, res) => {
   try {
     await uploadImageToS3(`packs/${res.locals.id}/cover.png`, req.file!.buffer);
-    const url = await getSignedUrlForPack(res.locals.id);
+    const url = await getSignedUrlForCover(res.locals.id);
     return res.status(201).send(url);
   } catch (error) {
     console.log(error);

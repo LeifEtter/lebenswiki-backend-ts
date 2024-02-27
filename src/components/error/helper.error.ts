@@ -15,7 +15,6 @@ export const handleError = ({
 }: PrismaErrorHandlerType): Response => {
   console.log(error);
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    console.log(error.code);
     // Resource not found
     if (["P2001", "P2025"].includes(error.code)) {
       return res

@@ -1,8 +1,7 @@
 import { Router } from "express";
-
 import authenticate from "../../middleware/authentication.middleware";
 import minLevel from "../../middleware/authorization.middleware";
-import { body, check } from "express-validator";
+import { body } from "express-validator";
 import {
   clapForPack,
   createPack,
@@ -16,7 +15,6 @@ import {
   publishPack,
   unpublishPack,
   updatePack,
-  updatePages,
   uploadPackImage,
   viewPack,
 } from "./controller.pack";
@@ -27,6 +25,7 @@ import {
 import ReportRouter from "./report/router.report.pack";
 import ReadRouter from "./read/router.read.pack";
 import BookmarkRouter from "./bookmark/router.bookmark.pack";
+import PagesRouter from "./pages/router.pages.pack";
 import multer = require("multer");
 const upload = multer();
 
@@ -35,6 +34,7 @@ const router: Router = Router();
 router.use("/report", ReportRouter);
 router.use("/read", ReadRouter);
 router.use("/bookmark", BookmarkRouter);
+router.use("/:packId/pages", PagesRouter);
 
 router.route("/create").post(
   authenticate,
@@ -73,12 +73,6 @@ router.route("/update/:id").put(
   updatePack,
 );
 
-router
-  .route("/update/pages/:id")
-  .patch(checkValidId, authenticate, minLevel(3), updatePages);
-
-router.route("/page/image/upload/:id").post();
-
 router.route("/view/:id").get(checkValidId, authenticate, viewPack);
 
 router
@@ -102,7 +96,7 @@ router
   .route("/own/delete/:id")
   .delete(checkValidId, authenticate, minLevel(3), deleteOwnPack);
 
-router.route("/").get(authenticate, getAllPacks);
+router.route("/").get(getAllPacks);
 
 router
   .route("/clap/:id")
@@ -111,7 +105,7 @@ router
 router.route("/categorized").get(authenticate, getAllPacksWithCategories);
 
 router
-  .route("/image/upload/:id")
+  .route("/cover/upload/:id")
   .post(checkValidId, upload.single("image"), uploadPackImage);
 
 export default router;

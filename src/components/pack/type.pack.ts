@@ -30,6 +30,7 @@ export type PackFromQuery = Prisma.PackGetPayload<{
         items: {
           select: {
             id: true;
+            position: true;
             type: true;
             headContent: {
               select: {
@@ -79,6 +80,7 @@ export type PackPageContentForResponse = {
 export type PackPageItemForResponse = {
   id: number;
   type: string;
+  position: number;
   headContent: PackPageContentForResponse;
   bodyContent: PackPageContentForResponse[];
 };

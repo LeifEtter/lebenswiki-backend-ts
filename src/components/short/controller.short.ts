@@ -42,7 +42,6 @@ export const createShort: Middleware = async (req, res) => {
     const canPublishImmediately = res.locals.user.role.level >= 3;
     const { title, content, categories } = req.body;
 
-    console.log(categories);
     const short = await db.short.create({
       data: {
         title,

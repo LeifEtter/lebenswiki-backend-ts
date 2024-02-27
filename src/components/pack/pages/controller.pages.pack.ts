@@ -1,0 +1,97 @@
+import { Middleware } from "express-validator/src/base";
+import {
+  getSignedUrlForImageViewing,
+  uploadImageToS3,
+} from "../../image/controller.image";
+import db from "../../../database/database";
+import { handleError } from "../../error/helper.error";
+import { JsonPackPageItem } from "./type.pages.pack";
+
+export const uploadItemImage: Middleware = async (req, res) => {
+  try {
+    if (req.params == null || req.params.packId == null || !req.params.itemId) {
+      return res.status(404).send({ message: "Pass proper id" });
+    }
+    const { packId, itemId } = req.params;
+    const imagePath: string = `packs/${packId}/pages/${itemId}.png`;
+    await uploadImageToS3(imagePath, req.file!.buffer);
+    const url = await getSignedUrlForImageViewing(imagePath);
+    return res.status(201).send(url);
+  } catch (error) {
+    console.log(error);
+    return res.status(501).send({ message: "Pack Image Couldn't be updated" });
+  }
+};
+
+export const updatePages: Middleware = async (req, res) => {
+  try {
+    const pages = req.body;
+    // Delete all pages so don't have to update
+    await db.packPage.deleteMany({
+      where: {
+        packId: parseInt(req.params!.packId),
+      },
+    });
+
+    for (const page of pages) {
+      const createdPage = await db.packPage.create({
+        data: {
+          id: page.id,
+          pageNumber: page.pageNumber,
+          pack: {
+            connect: {
+              id: parseInt(req.params!.packId),
+            },
+          },
+        },
+      });
+      const items: JsonPackPageItem[] = page.items;
+      for (const item of items) {
+        if (item.headContent == null) {
+          throw "Please provide head content for every pack page item";
+        }
+        const createdHeadContent = await db.packPageItemHeadContent.create({
+          data: {
+            id: item.headContent.id,
+            value: item.headContent.value,
+          },
+        });
+        const createdItem = await db.packPageItem.create({
+          data: {
+            id: item.id,
+            type: item.type,
+            PackPage: {
+              connect: {
+                id: createdPage.id,
+              },
+            },
+            headContent: {
+              connect: {
+                id: createdHeadContent.id,
+              },
+            },
+            position: item.position,
+          },
+        });
+        if (item.bodyContent) {
+          for (const bodyItem of item.bodyContent) {
+            await db.packPageItemBodyContent.create({
+              data: {
+                id: bodyItem.id,
+                value: bodyItem.value,
+                parent: {
+                  connect: {
+                    id: createdItem.id,
+                  },
+                },
+              },
+            });
+          }
+        }
+      }
+    }
+    return res.status(200).send({ message: "Saved" });
+  } catch (error) {
+    return handleError({ error, res, rName: "Pack" });
+  }
+};
