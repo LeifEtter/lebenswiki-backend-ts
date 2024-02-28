@@ -12,7 +12,6 @@ const router: Router = Router();
 
 router.route("/update/:id").patch(
   checkValidId,
-
   authenticate,
   body("progress").exists().isNumeric(),
   checkValidatorResult({
@@ -24,9 +23,7 @@ router.route("/update/:id").patch(
 
 router.route("/create/:id").post(
   checkValidId,
-
   authenticate,
-  body("progress").exists().isNumeric(),
   checkValidatorResult({
     resource: "Read",
     msg: "Please make sure to pass 'progress' with an integer",

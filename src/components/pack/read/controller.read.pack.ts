@@ -36,13 +36,24 @@ export const createReadForPack: Middleware = async (req, res) => {
         packId: res.locals.id,
       },
     });
+    //TODO Bad code
     if (existingRead) {
+      await db.read.updateMany({
+        where: {
+          userId: res.locals.user.id,
+          packId: res.locals.id,
+        },
+        data: { progress: 1 },
+      });
       return res
-        .status(400)
-        .send({ message: "You have already created a read for this pack" });
+        .status(201)
+        .send({
+          message: "You have already created a read for this pack, its ok",
+        });
     }
     const readResult = await db.read.create({
       data: {
+        progress: 1,
         User: {
           connect: {
             id: res.locals.user.id,

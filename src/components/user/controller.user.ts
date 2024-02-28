@@ -14,6 +14,7 @@ import { getBlocksAsIdList } from "../block/helpers.block";
 import { PackForResponse } from "../pack/type.pack";
 import { convertUserForResponse } from "./helpers.user";
 import { UserForResponse } from "./type.user";
+import { getSignedUrlForAvatar } from "../image/controller.image";
 
 const SALT_ROUNDS: number = 10;
 const TWO_HOURS_IN_MILLISECONDS = 2 * 60 * 60 * 1000;
@@ -182,7 +183,27 @@ export const showProfile: Middleware = async (req, res) => {
         id: res.locals.user.id,
       },
     });
-    const userForResponse = await convertUserForResponse(user);
+
+    let profileImage: string | undefined;
+    if (user.avatar == null) {
+      profileImage = await getSignedUrlForAvatar(user.id);
+    }
+
+    const role = await db.role.findUniqueOrThrow({
+      where: { id: user.roleId! },
+    });
+    const userForResponse = {
+      id: user.id,
+      name: user.name,
+      biography: user.biography,
+      avatar: user.avatar ?? undefined,
+      profileImage: profileImage,
+      role: {
+        id: role.id,
+        level: role.accessLevel,
+        name: role.name,
+      },
+    };
     return res.status(200).send(userForResponse);
   } catch (error) {
     console.log(error);

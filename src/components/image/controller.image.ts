@@ -20,7 +20,7 @@ export const getSignedUrlForImageViewing = async (
     Bucket: "lebenswiki-storage",
     Key: path,
   });
-  const url = await getSignedUrl(client, command, { expiresIn: 3600 });
+  const url = await getSignedUrl(client, command, { expiresIn: 7200 });
   return url;
 };
 
