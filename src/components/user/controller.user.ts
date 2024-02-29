@@ -198,6 +198,7 @@ export const showProfile: Middleware = async (req, res) => {
       biography: user.biography,
       avatar: user.avatar ?? undefined,
       profileImage: profileImage,
+      email: user.email,
       role: {
         id: role.id,
         level: role.accessLevel,
@@ -264,6 +265,18 @@ export const getUsersProfile: Middleware = async (req, res) => {
     });
   } catch (error) {
     return handleError({ error, res, rName: "User" });
+  }
+};
+
+export const defaultAvatar: Middleware = async (req, res) => {
+  try {
+    await db.user.update({
+      where: { id: res.locals.user.id },
+      data: { avatar: "assets/avatars/001-bear.png" },
+    });
+    return res.status(200).send({ message: "Default avatar set" });
+  } catch (error) {
+    return res.status(501).send({ message: "Something went wrong" });
   }
 };
 

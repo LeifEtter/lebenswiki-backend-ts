@@ -6,6 +6,7 @@ import {
 import { body } from "express-validator";
 import {
   checkToken,
+  defaultAvatar,
   getUsersProfile,
   login,
   register,
@@ -16,6 +17,7 @@ import authenticate from "../../middleware/authentication.middleware";
 
 import { deleteAvatar } from "../image/controller.image";
 import minLevel from "../../middleware/authorization.middleware";
+import db from "../../database/database";
 
 const router: Router = Router();
 
@@ -66,5 +68,7 @@ router
   .delete(checkValidId, authenticate, minLevel(2), deleteAvatar);
 
 router.route("/:id").get(checkValidId, authenticate, getUsersProfile);
+
+router.route("/defaultAvatar").patch(authenticate, defaultAvatar);
 
 export default router;
