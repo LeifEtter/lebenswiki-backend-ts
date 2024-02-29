@@ -3,6 +3,7 @@ import authenticate from "../../../middleware/authentication.middleware";
 import minLevel from "../../../middleware/authorization.middleware";
 import { updatePages, uploadItemImage } from "./controller.pages.pack";
 import multer = require("multer");
+import { checkValidId } from "../../../middleware/validation.middleware";
 const upload = multer();
 
 const router: Router = Router({ mergeParams: true });

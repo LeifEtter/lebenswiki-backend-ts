@@ -1,13 +1,16 @@
 import { Router } from "express";
 import {
+  bookmarkShort,
   clapForShort,
   createShort,
   deleteShort,
   getAllShorts,
   getAllShortsWithCategories,
+  getBookmarkedShorts,
   getOwnPublishedShorts,
   getOwnUnpublishedShorts,
   publishShort,
+  unbookmarkShort,
   unpublishShort,
 } from "./controller.short";
 import authenticate from "../../middleware/authentication.middleware";
@@ -37,6 +40,8 @@ router.route("/create").post(
   createShort,
 );
 
+router.route("/bookmarked").get(authenticate, minLevel(2), getBookmarkedShorts);
+
 router
   .route("/own/published")
   .get(authenticate, minLevel(2), getOwnPublishedShorts);
@@ -44,7 +49,9 @@ router
   .route("/own/unpublished")
   .get(authenticate, minLevel(2), getOwnUnpublishedShorts);
 
-router.route("/clap/:id").patch(authenticate, minLevel(2), clapForShort);
+router
+  .route("/clap/:id")
+  .patch(checkValidId, authenticate, minLevel(2), clapForShort);
 
 router
   .route("/publish/:id")
@@ -56,5 +63,13 @@ router
 router
   .route("/delete/:id")
   .delete(checkValidId, authenticate, minLevel(2), deleteShort);
+
+router
+  .route("/bookmark/:id")
+  .patch(checkValidId, authenticate, minLevel(2), bookmarkShort);
+
+router
+  .route("/unbookmark/:id")
+  .patch(checkValidId, authenticate, minLevel(2), unbookmarkShort);
 
 export default router;

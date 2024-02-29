@@ -81,6 +81,37 @@ export const deleteShort: Middleware = async (req, res) => {
   }
 };
 
+export const getBookmarkedShorts: Middleware = async (req, res) => {
+  try {
+    const shorts = await db.short.findMany({
+      where: {
+        published: true,
+        User_bookmarkedBy: {
+          some: {
+            id: res.locals.user.id,
+          },
+        },
+      },
+      include: {
+        User_Short_creatorIdToUser: true,
+        User_bookmarkedBy: true,
+        User_downVote: true,
+        User_upVote: true,
+        User_clap: true,
+      },
+    });
+    const shortsForResponse: ShortForResponse[] = await Promise.all(
+      shorts.map(
+        async (short) =>
+          await convertShortForResponse(res.locals.user.id, short),
+      ),
+    );
+    return res.status(200).send(shortsForResponse);
+  } catch (error) {
+    return handleError({ res, error, rName: "Bookmarked Shorts" });
+  }
+};
+
 export const getOwnPublishedShorts: Middleware = async (req, res) => {
   try {
     const shorts = await db.short.findMany({
@@ -188,7 +219,7 @@ export const clapForShort: Middleware = async (req, res) => {
 export const publishShort: Middleware = async (req, res) => {
   try {
     await db.short.update({
-      where: { id: res.locals.id },
+      where: { id: res.locals.id, creatorId: res.locals.user.id },
       data: {
         published: true,
       },
@@ -202,7 +233,7 @@ export const publishShort: Middleware = async (req, res) => {
 export const unpublishShort: Middleware = async (req, res) => {
   try {
     await db.short.update({
-      where: { id: res.locals.id },
+      where: { id: res.locals.id, creatorId: res.locals.user.id },
       data: {
         published: false,
       },
@@ -210,5 +241,45 @@ export const unpublishShort: Middleware = async (req, res) => {
     return res.status(200).send({ message: "Short unpublished" });
   } catch (error) {
     return handleError({ res, error, rName: "Short" });
+  }
+};
+
+export const bookmarkShort: Middleware = async (req, res) => {
+  try {
+    await db.short.update({
+      where: {
+        id: res.locals.id,
+      },
+      data: {
+        User_bookmarkedBy: {
+          connect: {
+            id: res.locals.user.id,
+          },
+        },
+      },
+    });
+    return res.status(200).send({ message: "Successfully bookmarked Short" });
+  } catch (error) {
+    return handleError({ res, error, rName: "Pack" });
+  }
+};
+
+export const unbookmarkShort: Middleware = async (req, res) => {
+  try {
+    await db.short.update({
+      where: {
+        id: res.locals.id,
+      },
+      data: {
+        User_bookmarkedBy: {
+          disconnect: {
+            id: res.locals.user.id,
+          },
+        },
+      },
+    });
+    return res.status(200).send({ message: "Successfully unbookmarked Short" });
+  } catch (error) {
+    return handleError({ res, error, rName: "Pack" });
   }
 };

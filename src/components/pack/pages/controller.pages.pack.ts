@@ -13,6 +13,12 @@ export const uploadItemImage: Middleware = async (req, res) => {
       return res.status(404).send({ message: "Pass proper id" });
     }
     const { packId, itemId } = req.params;
+    if (
+      (await db.pack.findFirst({ where: { id: packId } }))?.creatorId !=
+      res.locals.user.id
+    ) {
+      return res.status(401).send({ message: "This isn't your pack" });
+    }
     const imagePath: string = `packs/${packId}/pages/${itemId}.png`;
     await uploadImageToS3(imagePath, req.file!.buffer);
     const url = await getSignedUrlForImageViewing(imagePath);
@@ -25,6 +31,12 @@ export const uploadItemImage: Middleware = async (req, res) => {
 
 export const updatePages: Middleware = async (req, res) => {
   try {
+    const pack = await db.pack.findFirst({
+      where: { id: parseInt(req.params!.packId) },
+    });
+    if (pack?.creatorId != res.locals.user.id) {
+      return res.status(401).send({ message: "This isn't your pack" });
+    }
     const pages = req.body;
     // Delete all pages so don't have to update
     await db.packPage.deleteMany({

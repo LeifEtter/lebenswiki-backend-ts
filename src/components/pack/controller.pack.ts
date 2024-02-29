@@ -19,6 +19,11 @@ export const updatePack: Middleware = async (req, res) => {
       where: { id: res.locals.id },
       include: { Category: true },
     });
+    if (prevPack?.creatorId != res.locals.user.id) {
+      return res
+        .status(401)
+        .send({ message: "You have to be owner of this pack" });
+    }
     const catsToDisconnect = prevPack?.Category.map((cat) => cat.id).filter(
       (item) => req.body.categories.indexOf(item) < 0,
     );
