@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 app.route("/test").get((req, res: express.Response) => {
   return res.status(200).send({ message: "Working" });
 });
-app.get("/view/deleteAccount", (req, res) => {
+app.route("/view/deleteAccount").get((req, res) => {
   res.render("a");
 });
 app.use("/user", userRouter);
