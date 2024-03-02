@@ -15,13 +15,20 @@ import imageRouter from "./components/image/router.image";
 import shortRouter from "./components/short/router.short";
 import feedbackRouter from "./components/feedback/router.feedback";
 import db = require("./database/database");
+import path = require("path");
 // import corsOptionsDelegate = require("./config/cors.config");
 
 const app = express();
+app.set("view engine", "ejs");
+// app.set("views", path.join(__dirname, "views"));
+app.set("views", `${__dirname}/views`);
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyParser.json());
 app.route("/test").get((req, res: express.Response) => {
   return res.status(200).send({ message: "Working" });
+});
+app.get("/view/deleteAccount", (req, res) => {
+  res.render("a");
 });
 app.use("/user", userRouter);
 app.use("/pack", packRouter);
