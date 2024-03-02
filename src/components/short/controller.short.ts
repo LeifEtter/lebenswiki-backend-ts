@@ -283,3 +283,39 @@ export const unbookmarkShort: Middleware = async (req, res) => {
     return handleError({ res, error, rName: "Pack" });
   }
 };
+
+export const reportShort: Middleware = async (req, res) => {
+  try {
+    console.log(res.locals.user.id);
+    const reason: string = req.body.reason;
+    const short = await db.short.findUnique({
+      where: {
+        id: res.locals.id,
+      },
+    });
+    if (short == null) {
+      return res.status(404).send({ message: "Short not found" });
+    }
+    if (short.creatorId == res.locals.user.id) {
+      return res.status(401).send({ message: "Can't Report own short" });
+    }
+    await db.report.create({
+      data: {
+        reason: reason,
+        User: {
+          connect: {
+            id: res.locals.user.id,
+          },
+        },
+        Short: {
+          connect: {
+            id: short.id,
+          },
+        },
+      },
+    });
+    return res.status(200).send({ message: "Successfully Report Short" });
+  } catch (error) {
+    return handleError({ res, error, rName: "Short" });
+  }
+};

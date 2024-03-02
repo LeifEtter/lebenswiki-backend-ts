@@ -13,7 +13,7 @@ const router: Router = Router();
 router.route("/create/:id").post(
   checkValidId,
   authenticate,
-  body("reason").exists().isString(),
+  body("reason").exists().isString().escape(),
   checkValidatorResult({
     resource: "Report",
     msg: "Please make sure you are passing a 'reason' as a string.",

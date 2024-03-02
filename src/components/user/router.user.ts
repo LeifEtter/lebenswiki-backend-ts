@@ -5,19 +5,19 @@ import {
 } from "../../middleware/validation.middleware";
 import { body } from "express-validator";
 import {
+  blockUser,
   checkToken,
   defaultAvatar,
   getUsersProfile,
   login,
   register,
   showProfile,
+  unblockUser,
   updateProfile,
 } from "./controller.user";
 import authenticate from "../../middleware/authentication.middleware";
-
 import { deleteAvatar } from "../image/controller.image";
 import minLevel from "../../middleware/authorization.middleware";
-import db from "../../database/database";
 
 const router: Router = Router();
 
@@ -70,5 +70,21 @@ router
 router.route("/:id").get(checkValidId, authenticate, getUsersProfile);
 
 router.route("/defaultAvatar").patch(authenticate, defaultAvatar);
+
+router.route("/block/:id").post(
+  checkValidId,
+  authenticate,
+  minLevel(2),
+  body("reason").exists().isString().escape(),
+  checkValidatorResult({
+    resource: "Block",
+    msg: "Please make sure to pass a 'reason' as a string.",
+  }),
+  blockUser,
+);
+
+router
+  .route("/unblock/:id")
+  .delete(checkValidId, authenticate, minLevel(2), unblockUser);
 
 export default router;

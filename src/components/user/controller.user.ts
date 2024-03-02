@@ -280,4 +280,74 @@ export const defaultAvatar: Middleware = async (req, res) => {
   }
 };
 
+export const blockUser: Middleware = async (req, res) => {
+  try {
+    const userToBlock = await db.user.findUnique({
+      where: {
+        id: res.locals.id,
+      },
+      include: {
+        Block_Block_blockerIdToUser: true,
+      },
+    });
+    if (!userToBlock) {
+      return res.status(404).send({ message: "User couldn't be found" });
+    }
+    if (userToBlock.Block_Block_blockerIdToUser.includes(res.locals.user.id)) {
+      return res.status(400).send({ message: "User already blocked" });
+    }
+    await db.block.create({
+      data: {
+        User_Block_blockerIdToUser: {
+          connect: {
+            id: res.locals.user.id,
+          },
+        },
+        User_Block_blockedIdToUser: {
+          connect: {
+            id: res.locals.id,
+          },
+        },
+        reason: req.body.reason,
+      },
+    });
+    return res.status(201).send({ message: "User has been blocked" });
+  } catch (error) {
+    console.log(error);
+    return res.status(501).send({
+      message:
+        "Something went wrong while blocking this user. Please contact us immediately.",
+    });
+  }
+};
+
+export const unblockUser: Middleware = async (req, res) => {
+  try {
+    const userToBlock = await db.user.findUnique({
+      where: {
+        id: res.locals.id,
+      },
+    });
+    console.log(userToBlock);
+    if (!userToBlock) {
+      return res.status(404).send({ message: "User couldn't be found" });
+    }
+    console.log(res.locals.user.id);
+    console.log(res.locals.id);
+    await db.block.deleteMany({
+      where: {
+        blockerId: res.locals.user.id,
+        blockedId: res.locals.id,
+      },
+    });
+    return res.status(200).send({ message: "User has been unblocked" });
+  } catch (error) {
+    console.log(error);
+    return res.status(501).send({
+      message:
+        "Something went wrong while unblocking this user. Please contact us immediately.",
+    });
+  }
+};
+
 // Implement Anonymous login

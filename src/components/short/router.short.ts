@@ -10,6 +10,7 @@ import {
   getOwnPublishedShorts,
   getOwnUnpublishedShorts,
   publishShort,
+  reportShort,
   unbookmarkShort,
   unpublishShort,
 } from "./controller.short";
@@ -71,5 +72,17 @@ router
 router
   .route("/unbookmark/:id")
   .patch(checkValidId, authenticate, minLevel(2), unbookmarkShort);
+
+router.route("/report/:id").patch(
+  checkValidId,
+  authenticate,
+  minLevel(2),
+  body("reason").exists().isString().escape(),
+  checkValidatorResult({
+    resource: "Report",
+    msg: "Please make sure you're passing a 'reason' as a string.",
+  }),
+  reportShort,
+);
 
 export default router;
