@@ -53,7 +53,9 @@ export const convertPackForResponse = async ({
   );
   const totalClaps: number = pack.User_userClap.length;
   const totalBookmarks: number = pack.User_bookmarkedByForPack.length;
-  const readProgress: number = pack.Read.length > 0 ? pack.Read[0].progress : 0;
+  const usersRead = pack.Read.filter((read) => read.userId == userId);
+  const readProgress: number = usersRead.length > 0 ? usersRead[0].progress : 0;
+  const totalReads: number = pack.Read.length;
   const creator: UserForResponse = await convertUserForResponse(
     pack.User_Pack_creatorIdToUser!,
   );
@@ -96,6 +98,7 @@ export const convertPackForResponse = async ({
     comments: comments.length != 0 ? comments : undefined,
     pages: pack.pages,
     published: pack.published,
+    totalReads,
   };
 };
 
@@ -130,8 +133,8 @@ export const getPacksForReturn = async ({
         User_userClap: true,
         Category: { select: { id: true, categoryName: true } },
         Read: {
-          where: { userId: userId },
-          select: { progress: true },
+          // where: { userId: userId },
+          select: { progress: true, userId: true },
         },
         Comment: {
           where: {

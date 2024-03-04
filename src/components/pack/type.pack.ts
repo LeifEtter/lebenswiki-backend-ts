@@ -7,7 +7,7 @@ export type PackFromQuery = Prisma.PackGetPayload<{
   include: {
     User_bookmarkedByForPack: true;
     Read: {
-      select: { progress: true };
+      select: { progress: true; userId: true };
     };
     User_Pack_creatorIdToUser: true;
     Comment: {
@@ -70,6 +70,7 @@ export type PackForResponse = {
   pages: PackPageForResponse[];
   comments?: CommentForResponse[];
   published: boolean;
+  totalReads?: number;
 };
 
 export type PackPageContentForResponse = {

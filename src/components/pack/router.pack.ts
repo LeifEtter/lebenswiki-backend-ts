@@ -96,7 +96,7 @@ router
   .route("/own/delete/:id")
   .delete(checkValidId, authenticate, minLevel(3), deleteOwnPack);
 
-router.route("/").get(getAllPacks);
+router.route("/").get(authenticate, getAllPacks);
 
 router
   .route("/clap/:id")

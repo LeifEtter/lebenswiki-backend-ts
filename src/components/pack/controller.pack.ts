@@ -231,13 +231,15 @@ export const deleteOwnPack: Middleware = async (req, res) => {
 
 export const getAllPacks: Middleware = async (req, res) => {
   try {
-    const blockList: number[] = await getBlocksAsIdList(res.locals.user.id);
     const packs = await getPacksForReturn({
       where: {
         published: true,
       },
-      userId: res.locals.user.id,
-      blockList,
+      userId: res.locals.user != null ? res.locals.user.id : 1,
+      blockList:
+        res.locals.user.id != null
+          ? await getBlocksAsIdList(res.locals.user.id)
+          : [],
     });
     return res.status(200).send(packs);
   } catch (error) {
