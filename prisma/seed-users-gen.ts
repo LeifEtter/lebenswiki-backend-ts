@@ -29,9 +29,9 @@ function randomIntFromInterval(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-async function createDummyUsers(): Promise<number[]> {
+async function createDummyUsers(userAmount: number): Promise<number[]> {
   const userIdList: number[] = [];
-  for (let i: number = 0; i < 1000; i++) {
+  for (let i: number = 0; i < userAmount; i++) {
     const email: string = fake.internet.email();
     const existingUserWithEmail = await db.user.findFirst({
       where: { email: email },
@@ -61,14 +61,17 @@ async function getAllPacksAsIds(): Promise<number[]> {
   return packIds;
 }
 
-async function useDummyUsersToClap() {
+async function useDummyUsersToClap(userAmount: number) {
   let shuffledUsers: number[];
   const packIds: number[] = await getAllPacksAsIds();
-  const userIds: number[] = await createDummyUsers();
+  const userIds: number[] = await createDummyUsers(userAmount);
 
   for (const packId of packIds) {
     shuffledUsers = shuffle(userIds);
-    const clapAmount = randomIntFromInterval(100, 500);
+    const clapAmount = randomIntFromInterval(
+      Math.round(userAmount / 7),
+      Math.round(userAmount * 0.6),
+    );
     const clappingUsers = shuffledUsers.slice(0, clapAmount);
     for (const userId of clappingUsers) {
       await db.pack.update({
@@ -106,7 +109,7 @@ async function useDummyUsersToClap() {
 
 async function main() {
   try {
-    await useDummyUsersToClap();
+    await useDummyUsersToClap(10);
   } catch (error) {
     console.log(error);
   }
