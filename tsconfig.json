@@ -1,17 +1,18 @@
 {
+  "include": ["src/**/*.ts"],
   "compilerOptions": {
-    "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "target": "es2016",
     "lib": ["es6"],
-    "module": "commonjs" /* Specify what module code is generated. */ /* Conditions to set in addition to the resolver-specific defaults when resolving imports. */,
-    "resolveJsonModule": true /* Enable importing .json files. */,
-    "allowJs": true /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */ /* Specify a file that bundles all outputs into one JavaScript file. If 'declaration' is true, also designates a file that bundles all .d.ts output. */,
+    "module": "commonjs",
+    "resolveJsonModule": true,
+    "allowJs": true,
     "rootDir": "src",
-    "outDir": "build" /* Specify an output folder for all emitted files. */ /* Allow 'import x from y' when a module doesn't have a default export. */,
-    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */ /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */,
-    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
-    "strict": true /* Enable all strict type-checking options. */,
-    "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */
-  },
-  // "files": ["rootDir", "src", " --esModuleInterop", " --module", "commonjs"]
+    "outDir": "build",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": false
+  }
 }
