@@ -14,6 +14,7 @@ import categoryRouter from "./components/category/router.category";
 import imageRouter from "./components/image/router.image";
 import shortRouter from "./components/short/router.short";
 import feedbackRouter from "./components/feedback/router.feedback";
+import logRouter from "./components/log/router.log";
 import db = require("./database/database");
 import path = require("path");
 // import corsOptionsDelegate = require("./config/cors.config");
@@ -38,6 +39,7 @@ app.use("/category", categoryRouter);
 app.use("/image", imageRouter);
 app.use("/short", shortRouter);
 app.use("/feedback", feedbackRouter);
+app.use("/log", logRouter);
 // app.use(cors(corsOptionsDelegate));
 
 async function main() {
@@ -67,7 +69,7 @@ async function main() {
       anonUser.roleId != 1
     ) {
       console.log(
-        "Please add a anonymous user, and connect him with Role id=1, and/or make sure he has the following data:",
+        "Please add a anonymous user, and connect him with Role id=1, and/or make sure he has the following data:"
       );
       console.log("email: anonymous@lebenswiki.com");
       console.log("The other fields can be defined as anything you want.");
@@ -78,10 +80,10 @@ async function main() {
     if (environment == "PRODUCTION") {
       const options: https.ServerOptions = {
         key: fs.readFileSync(
-          "/etc/letsencrypt/live/api.lebenswiki.com/privkey.pem",
+          "/etc/letsencrypt/live/api.lebenswiki.com/privkey.pem"
         ),
         cert: fs.readFileSync(
-          "/etc/letsencrypt/live/api.lebenswiki.com/fullchain.pem",
+          "/etc/letsencrypt/live/api.lebenswiki.com/fullchain.pem"
         ),
       };
       const server: https.Server = https.createServer(options, app);

@@ -14,6 +14,15 @@ model Role {
   accessLevel Int
 }
 
+model EventLog {
+  id         Int      @id @default(autoincrement())
+  platform   String
+  deviceId   String
+  event      String?
+  stackTrace String?
+  timestamp  DateTime @default(now())
+}
+
 model Block {
   reason                     String   @db.Text
   blockerId                  Int
@@ -123,7 +132,7 @@ model PackPageItem {
   bodyContent PackPageItemBodyContent[]
   PackPage    PackPage                  @relation(fields: [packPageId], references: [id], onDelete: Cascade)
   packPageId  String
-  position    Int
+  position    Int                       @default(0)
 }
 
 model PackPageItemHeadContent {
