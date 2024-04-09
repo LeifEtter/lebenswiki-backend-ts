@@ -70,7 +70,7 @@ async function useDummyUsersToClap(userAmount: number) {
     shuffledUsers = shuffle(userIds);
     const clapAmount = randomIntFromInterval(
       Math.round(userAmount / 7),
-      Math.round(userAmount * 0.6),
+      Math.round(userAmount * 0.6)
     );
     const clappingUsers = shuffledUsers.slice(0, clapAmount);
     for (const userId of clappingUsers) {
@@ -107,9 +107,48 @@ async function useDummyUsersToClap(userAmount: number) {
   }
 }
 
+async function getAllShortsAsIds(): Promise<number[]> {
+  const packs = await db.short.findMany({
+    where: {
+      published: true,
+    },
+  });
+  const packIds = packs.map((pack) => pack.id);
+  return packIds;
+}
+
+async function useDummyUsersToClapShort(userAmount: number) {
+  let shuffledUsers: number[];
+  const shortIds: number[] = await getAllShortsAsIds();
+  const userIds: number[] = await createDummyUsers(userAmount);
+
+  for (const shortId of shortIds) {
+    shuffledUsers = shuffle(userIds);
+    const clapAmount = randomIntFromInterval(
+      Math.round(userAmount / 7),
+      Math.round(userAmount * 0.6)
+    );
+    const clappingUsers = shuffledUsers.slice(0, clapAmount);
+    for (const userId of clappingUsers) {
+      await db.short.update({
+        where: {
+          id: shortId,
+        },
+        data: {
+          User_clap: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      });
+    }
+  }
+}
+
 async function main() {
   try {
-    await useDummyUsersToClap(10);
+    await useDummyUsersToClapShort(40);
   } catch (error) {
     console.log(error);
   }
