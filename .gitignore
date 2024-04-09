@@ -5,3 +5,4 @@ node_modules
 .vscode
 .VSCodeCounter
 .prettierrc
+prisma/seed-shorts-gen.ts
