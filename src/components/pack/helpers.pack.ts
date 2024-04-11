@@ -45,11 +45,11 @@ export const convertPackForResponse = async ({
 }: ConvertPackForResponseParams): Promise<PackForResponse> => {
   const userHasBookmarked: boolean = checkIfUserHasBookmarked(
     userId,
-    pack.User_bookmarkedByForPack,
+    pack.User_bookmarkedByForPack
   );
   const userHasClapped: boolean = checkIfUserHasClapped(
     userId,
-    pack.User_userClap,
+    pack.User_userClap
   );
   const totalClaps: number = pack.User_userClap.length;
   const totalBookmarks: number = pack.User_bookmarkedByForPack.length;
@@ -57,17 +57,17 @@ export const convertPackForResponse = async ({
   const readProgress: number = usersRead.length > 0 ? usersRead[0].progress : 0;
   const totalReads: number = pack.Read.length;
   const creator: UserForResponse = await convertUserForResponse(
-    pack.User_Pack_creatorIdToUser!,
+    pack.User_Pack_creatorIdToUser!
   );
   const categories: CategoryForResponse[] = pack.Category.map((cat) =>
-    convertCategoryForResponse(cat),
+    convertCategoryForResponse(cat)
   );
   let comments: CommentForResponse[] = [];
   if (includeComments) {
     comments = await Promise.all(
       pack.Comment.map(
-        async (comment) => await convertCommentForResponse({ comment, userId }),
-      ),
+        async (comment) => await convertCommentForResponse({ comment, userId })
+      )
     );
   }
   const titleImage: string = await getSignedUrlForCover(pack.id);
@@ -75,7 +75,7 @@ export const convertPackForResponse = async ({
     for (const item of page.items) {
       if (item.type == "ItemType.image") {
         item.headContent!.value = await getSignedUrlForImageViewing(
-          `packs/${pack.id}/pages/${item.id}.png`,
+          `packs/${pack.id}/pages/${item.id}.png`
         );
       }
     }
@@ -152,6 +152,7 @@ export const getPacksForReturn = async ({
           select: {
             id: true,
             pageNumber: true,
+            type: true,
             items: {
               select: {
                 position: true,
@@ -167,6 +168,7 @@ export const getPacksForReturn = async ({
                   select: {
                     id: true,
                     value: true,
+                    isCorrectAnswer: true,
                   },
                 },
               },
@@ -183,8 +185,8 @@ export const getPacksForReturn = async ({
             pack,
             includeComments,
             includePages,
-          }),
-      ),
+          })
+      )
     );
     return packsForResponse;
   } catch (error) {
