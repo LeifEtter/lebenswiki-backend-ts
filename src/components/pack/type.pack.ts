@@ -27,6 +27,7 @@ export type PackFromQuery = Prisma.PackGetPayload<{
       select: {
         id: true;
         pageNumber: true;
+        type: true;
         items: {
           select: {
             id: true;
@@ -42,6 +43,7 @@ export type PackFromQuery = Prisma.PackGetPayload<{
               select: {
                 id: true;
                 value: true;
+                isCorrectAnswer: true;
               };
             };
           };
@@ -76,6 +78,7 @@ export type PackForResponse = {
 export type PackPageContentForResponse = {
   id: number;
   value: string;
+  isCorrectAnswer?: boolean;
 };
 
 export type PackPageItemForResponse = {
@@ -88,4 +91,5 @@ export type PackPageItemForResponse = {
 
 export type PackPageForResponse = {
   pageNumber: number;
+  type: string;
 };

@@ -50,6 +50,7 @@ export const updatePages: Middleware = async (req, res) => {
         data: {
           id: page.id,
           pageNumber: page.pageNumber,
+          type: page.type,
           pack: {
             connect: {
               id: parseInt(req.params!.packId),
@@ -91,6 +92,7 @@ export const updatePages: Middleware = async (req, res) => {
               data: {
                 id: bodyItem.id,
                 value: bodyItem.value,
+                isCorrectAnswer: bodyItem.isCorrectAnswer,
                 parent: {
                   connect: {
                     id: createdItem.id,

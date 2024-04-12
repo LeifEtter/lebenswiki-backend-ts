@@ -123,16 +123,18 @@ model PackPage {
   packId     Int
   pack       Pack           @relation(fields: [packId], references: [id], onDelete: Cascade)
   items      PackPageItem[]
+  type       String         @default("PageType.info")
 }
 
 model PackPageItem {
-  id          String                    @unique @default(uuid())
-  type        String
-  headContent PackPageItemHeadContent?
-  bodyContent PackPageItemBodyContent[]
-  PackPage    PackPage                  @relation(fields: [packPageId], references: [id], onDelete: Cascade)
-  packPageId  String
-  position    Int                       @default(0)
+  id           String                    @unique @default(uuid())
+  type         String
+  headContent  PackPageItemHeadContent?
+  bodyContent  PackPageItemBodyContent[]
+  PackPage     PackPage                  @relation(fields: [packPageId], references: [id], onDelete: Cascade)
+  packPageId   String
+  position     Int                       @default(0)
+  notDeletable Boolean?                  @default(false)
 }
 
 model PackPageItemHeadContent {
@@ -143,10 +145,11 @@ model PackPageItemHeadContent {
 }
 
 model PackPageItemBodyContent {
-  id             String       @unique
-  value          String
-  parent         PackPageItem @relation(fields: [packPageItemId], references: [id], onDelete: Cascade)
-  packPageItemId String
+  id              String       @unique
+  value           String
+  parent          PackPageItem @relation(fields: [packPageItemId], references: [id], onDelete: Cascade)
+  packPageItemId  String
+  isCorrectAnswer Boolean?
 }
 
 model Read {
