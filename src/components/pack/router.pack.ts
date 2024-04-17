@@ -10,6 +10,7 @@ import {
   getAllPacksWithCategories,
   getOwnPublished,
   getOwnUnpublished,
+  getQuizById,
   getReadPacks,
   getUnreadPacks,
   publishPack,
@@ -20,6 +21,7 @@ import {
 } from "./controller.pack";
 import {
   checkValidId,
+  checkValidStringId,
   checkValidatorResult,
 } from "../../middleware/validation.middleware";
 import ReportRouter from "./report/router.report.pack";
@@ -53,7 +55,7 @@ router.route("/create").post(
     resource: "Pack",
     msg: "Please make sure you are passing a title, description, initiative, categories as a list of numbers id's (numbers) and pages in the form of JSON.",
   }),
-  createPack,
+  createPack
 );
 
 router.route("/update/:id").put(
@@ -70,7 +72,7 @@ router.route("/update/:id").put(
     resource: "Pack",
     msg: "Please make sure you are passing a title, description, initiative, categories as a list of numbers id's (numbers) and pages in the form of JSON.",
   }),
-  updatePack,
+  updatePack
 );
 
 router.route("/view/:id").get(checkValidId, authenticate, viewPack);
@@ -107,5 +109,7 @@ router.route("/categorized").get(authenticate, getAllPacksWithCategories);
 router
   .route("/cover/upload/:id")
   .post(checkValidId, upload.single("image"), uploadPackImage);
+
+router.route("/quiz/:id").get(checkValidStringId, getQuizById);
 
 export default router;
