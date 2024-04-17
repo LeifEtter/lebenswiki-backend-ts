@@ -10,6 +10,7 @@ import {
   getAllPacksWithCategories,
   getOwnPublished,
   getOwnUnpublished,
+  getQuizById,
   getReadPacks,
   getUnreadPacks,
   publishPack,
@@ -20,6 +21,7 @@ import {
 } from "./controller.pack";
 import {
   checkValidId,
+  checkValidStringId,
   checkValidatorResult,
 } from "../../middleware/validation.middleware";
 import ReportRouter from "./report/router.report.pack";
@@ -107,5 +109,7 @@ router.route("/categorized").get(authenticate, getAllPacksWithCategories);
 router
   .route("/cover/upload/:id")
   .post(checkValidId, upload.single("image"), uploadPackImage);
+
+router.route("/quiz/:id").get(checkValidStringId, getQuizById);
 
 export default router;
