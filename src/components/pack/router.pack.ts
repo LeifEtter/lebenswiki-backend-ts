@@ -53,7 +53,7 @@ router.route("/create").post(
     resource: "Pack",
     msg: "Please make sure you are passing a title, description, initiative, categories as a list of numbers id's (numbers) and pages in the form of JSON.",
   }),
-  createPack,
+  createPack
 );
 
 router.route("/update/:id").put(
@@ -70,7 +70,7 @@ router.route("/update/:id").put(
     resource: "Pack",
     msg: "Please make sure you are passing a title, description, initiative, categories as a list of numbers id's (numbers) and pages in the form of JSON.",
   }),
-  updatePack,
+  updatePack
 );
 
 router.route("/view/:id").get(checkValidId, authenticate, viewPack);
