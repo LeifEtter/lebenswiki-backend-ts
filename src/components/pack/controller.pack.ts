@@ -313,3 +313,31 @@ export const uploadPackImage: Middleware = async (req, res) => {
     return res.status(501).send({ message: "Pack Image Couldn't be updated" });
   }
 };
+
+export const getQuizById: Middleware = async (req, res) => {
+  try {
+    const page = await db.packPage.findFirst({
+      where: {
+        id: res.locals.id,
+        type: "PageType.quiz",
+      },
+      include: {
+        items: {
+          include: {
+            headContent: true,
+            bodyContent: true,
+          },
+        },
+      },
+    });
+    if (page == null) {
+      return res
+        .status(404)
+        .send({ message: "No quiz with hits Id could be found" });
+    }
+    return res.status(200).send(page);
+  } catch (error) {
+    console.log(error);
+    return res.status(501).send({ message: "Quiz couldn't be retrieved" });
+  }
+};
