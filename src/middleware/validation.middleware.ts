@@ -96,7 +96,7 @@ export const checkValidatorResult =
 export const checkValidId = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   // if (validationResult(req).array().length != 0) {
   //   return res.status(400).send({ message: "Please pass a valid id" });
@@ -117,4 +117,23 @@ export const checkValidId = (
     res.locals.id = parseInt(req.params.id);
     next();
   }
+};
+
+export const checkValidStringId = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  // if (validationResult(req).array().length != 0) {
+  //   return res.status(400).send({ message: "Please pass a valid id" });
+  // }
+  if (!req.params.id) {
+    return res.status(400).send({
+      id: 110,
+      message:
+        "This route requires passing an ID, to define which resource to perform the action on",
+    });
+  }
+  res.locals.id = req.params.id;
+  next();
 };
