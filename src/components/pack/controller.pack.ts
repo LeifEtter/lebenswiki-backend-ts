@@ -25,7 +25,7 @@ export const updatePack: Middleware = async (req, res) => {
         .send({ message: "You have to be owner of this pack" });
     }
     const catsToDisconnect = prevPack?.Category.map((cat) => cat.id).filter(
-      (item) => req.body.categories.indexOf(item) < 0,
+      (item) => req.body.categories.indexOf(item) < 0
     );
     const pack = await db.pack.update({
       where: {
@@ -97,7 +97,7 @@ export const createPack: Middleware = async (req, res) => {
 export const viewPack: Middleware = async (req, res) => {
   try {
     const blockList: number[] = await getBlocksAsIdList(
-      res.locals.user.id ?? [],
+      res.locals.user.id ?? []
     );
     const packs: PackForResponse[] = await getPacksForReturn({
       where: {
@@ -266,7 +266,7 @@ export const getAllPacksWithCategories: Middleware = async (req, res) => {
           userId: res.locals.user.id,
           blockList: await getBlocksAsIdList(res.locals.user.id),
         }),
-      })),
+      }))
     );
     const allPacks: PackForResponse[] = await getPacksForReturn({
       where: { published: true },
