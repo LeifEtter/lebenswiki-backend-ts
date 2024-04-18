@@ -29,4 +29,48 @@ describe("the user login and registration process", () => {
         .expect(200);
     });
   });
+
+  describe("when a user makes mistakes during login and registration", () => {
+    describe("when user enters wrong email", () => {
+      it("should return a error message and 404", async () => {
+        await supertest(app)
+          .post("/user/login")
+          .send({ email: "lafasdfas@lebenswiki.com", password: "Test@1234" })
+          .expect(404)
+          .expect((res) => {
+            res.body.message = "Email Address or Password was invalid";
+          });
+      });
+    });
+
+    describe("when user enters wrong password", () => {
+      it("should return a error message and 404", async () => {
+        await supertest(app)
+          .post("/user/login")
+          .send({ email: "lafasdfas@lebenswiki.com", password: "Test@1234" })
+          .expect(404)
+          .expect((res) => {
+            res.body.message = "Email Address or Password was invalid";
+          });
+      });
+    });
+
+    describe("when user doesn't enter a long enough password", () => {
+      it("should return a bad format error code and message", async () => {
+        await supertest(app)
+          .post("/user/register")
+          .send({
+            name: name,
+            email: email,
+            password: "Tst@1",
+            biography: "Lorem Ipsum dolor sit amed",
+          })
+          .expect(400)
+          .expect((res) => {
+            res.body.id = 101;
+            res.body.message = "Password has bad format";
+          });
+      });
+    });
+  });
 });
