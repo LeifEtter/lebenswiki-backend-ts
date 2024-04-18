@@ -103,7 +103,7 @@ export const checkValidId = (
   next: NextFunction
 ) => {
   const numberRegex: RegExp = /^[0-9]+$/;
-  if (!req.params.id) {
+  if (req.params == null || req.params.id == null) {
     return res.status(400).send({
       id: 110,
       message:
