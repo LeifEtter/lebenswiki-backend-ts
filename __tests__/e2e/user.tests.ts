@@ -73,4 +73,13 @@ describe("the user login and registration process", () => {
       });
     });
   });
+
+  describe("when user changes profile data", () => {
+    describe("getting profile without passing authorization", () => {
+      it("should return a 401 status", async () => {
+        await supertest(app).get("/user/profile").expect(401);
+      });
+    });
+  });
+});
 });
