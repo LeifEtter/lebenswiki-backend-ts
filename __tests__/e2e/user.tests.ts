@@ -82,4 +82,7 @@ describe("the user login and registration process", () => {
     });
   });
 });
+
+afterAll(async () => {
+  await db.user.delete({ where: { email: email } });
 });
