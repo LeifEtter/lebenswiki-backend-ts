@@ -88,12 +88,12 @@ export const login: Middleware = async (req, res) => {
     }
     const passwordValid: boolean = await bcrypt.compare(
       password,
-      user.password,
+      user.password
     );
     if (!passwordValid) {
       return res.status(404).send({ message: GENERIC_LOGIN_ERROR });
     }
-
+    //TODO change expires in
     const token = jwt.sign({ user_id: user.id }, process.env.JWT_SECRET!, {
       expiresIn: "30 days",
     });
@@ -139,7 +139,7 @@ export const updatePassword: Middleware = async (req, res) => {
     });
     const passwordsMatch: boolean = await bcrypt.compare(
       oldPassword,
-      existingUser?.password,
+      existingUser?.password
     );
     if (!passwordsMatch) {
       return res

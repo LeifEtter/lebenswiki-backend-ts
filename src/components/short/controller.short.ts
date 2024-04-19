@@ -5,9 +5,14 @@ import { ShortForResponse, ShortFromQuery } from "./type.short";
 import { convertShortForResponse, getShortsForResponse } from "./helper.short";
 import { getBlocksAsIdList } from "../block/helpers.block";
 import { CategoryForResponse } from "../category/type.category";
+import cache from "../../cache/cache";
+import { CACHE_DURATION } from "../../constants/misc";
 
 export const getAllShorts: Middleware = async (req, res) => {
   try {
+    const cacheKey: string = `shorts-getAll-${res.locals.user.id}`;
+    const cachedRes = cache.get(cacheKey);
+    if (cachedRes) return res.status(200).send(cachedRes);
     const shorts: ShortFromQuery[] = await db.short.findMany({
       where: {
         published: true,
@@ -28,9 +33,10 @@ export const getAllShorts: Middleware = async (req, res) => {
     const shortsToReturn: ShortForResponse[] = await Promise.all(
       shorts.map(
         async (short) =>
-          await convertShortForResponse(res.locals.user.id, short),
-      ),
+          await convertShortForResponse(res.locals.user.id, short)
+      )
     );
+    cache.set(cacheKey, shortsToReturn, CACHE_DURATION);
     return res.status(200).send(shortsToReturn);
   } catch (error) {
     return handleError({ rName: "Short", res, error });
@@ -40,6 +46,9 @@ export const getAllShorts: Middleware = async (req, res) => {
 export const createShort: Middleware = async (req, res) => {
   try {
     const canPublishImmediately = res.locals.user.role.level >= 3;
+    if (canPublishImmediately) {
+      cache.flushAll();
+    }
     const { title, content, categories } = req.body;
 
     const short = await db.short.create({
@@ -103,8 +112,8 @@ export const getBookmarkedShorts: Middleware = async (req, res) => {
     const shortsForResponse: ShortForResponse[] = await Promise.all(
       shorts.map(
         async (short) =>
-          await convertShortForResponse(res.locals.user.id, short),
-      ),
+          await convertShortForResponse(res.locals.user.id, short)
+      )
     );
     return res.status(200).send(shortsForResponse);
   } catch (error) {
@@ -127,8 +136,8 @@ export const getOwnPublishedShorts: Middleware = async (req, res) => {
     const shortsForResponse: ShortForResponse[] = await Promise.all(
       shorts.map(
         async (short) =>
-          await convertShortForResponse(res.locals.user.id, short),
-      ),
+          await convertShortForResponse(res.locals.user.id, short)
+      )
     );
     return res.status(200).send(shortsForResponse);
   } catch (error) {
@@ -151,8 +160,8 @@ export const getOwnUnpublishedShorts: Middleware = async (req, res) => {
     const shortsForResponse: ShortForResponse[] = await Promise.all(
       shorts.map(
         async (short) =>
-          await convertShortForResponse(res.locals.user.id, short),
-      ),
+          await convertShortForResponse(res.locals.user.id, short)
+      )
     );
     return res.status(200).send(shortsForResponse);
   } catch (error) {
@@ -162,7 +171,10 @@ export const getOwnUnpublishedShorts: Middleware = async (req, res) => {
 
 export const getAllShortsWithCategories: Middleware = async (req, res) => {
   try {
+    const cacheKey: string = `shorts-getAll-${res.locals.user.id}`;
+    const cachedRes = cache.get(cacheKey);
     const categories = await db.category.findMany();
+    if (cachedRes) return res.status(200).send(cachedRes);
     const categorizedShorts: CategoryForResponse[] = await Promise.all(
       categories.map(async (cat) => ({
         id: cat.id,
@@ -179,7 +191,7 @@ export const getAllShortsWithCategories: Middleware = async (req, res) => {
           userId: res.locals.user.id,
           blockList: await getBlocksAsIdList(res.locals.user.id),
         }),
-      })),
+      }))
     );
     const allShorts: ShortForResponse[] = await getShortsForResponse({
       where: { published: true },
@@ -192,6 +204,7 @@ export const getAllShortsWithCategories: Middleware = async (req, res) => {
       shorts: allShorts,
     };
     categorizedShorts.unshift(allShortsCategory);
+    cache.set(cacheKey, allShortsCategory, CACHE_DURATION);
     return res.status(200).send(categorizedShorts);
   } catch (error) {
     return handleError({ res, error, rName: "Short" });
@@ -218,6 +231,7 @@ export const clapForShort: Middleware = async (req, res) => {
 
 export const publishShort: Middleware = async (req, res) => {
   try {
+    cache.flushAll();
     await db.short.update({
       where: { id: res.locals.id, creatorId: res.locals.user.id },
       data: {
@@ -232,6 +246,7 @@ export const publishShort: Middleware = async (req, res) => {
 
 export const unpublishShort: Middleware = async (req, res) => {
   try {
+    cache.flushAll();
     await db.short.update({
       where: { id: res.locals.id, creatorId: res.locals.user.id },
       data: {

@@ -2,6 +2,7 @@ import { Router } from "express";
 import authenticate from "../../middleware/authentication.middleware";
 import minLevel from "../../middleware/authorization.middleware";
 import { body } from "express-validator";
+import { Request, Response, NextFunction } from "express";
 import {
   clapForPack,
   createPack,
@@ -98,7 +99,15 @@ router
   .route("/own/delete/:id")
   .delete(checkValidId, authenticate, minLevel(3), deleteOwnPack);
 
-router.route("/").get(authenticate, getAllPacks);
+router.route("/").get(
+  authenticate,
+  // (req: Request, res: Response, n: NextFunction) => {
+  //   console.log("right");
+  //   n();
+  // },
+  // cacheForSeconds(300),
+  getAllPacks
+);
 
 router
   .route("/clap/:id")
