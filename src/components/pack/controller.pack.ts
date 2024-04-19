@@ -11,6 +11,8 @@ import {
   getSignedUrlForCover,
   uploadImageToS3,
 } from "../image/controller.image";
+import cache from "../../cache/cache";
+import { CACHE_DURATION } from "../../constants/misc";
 
 export const updatePack: Middleware = async (req, res) => {
   try {
@@ -171,6 +173,9 @@ export const getReadPacks: Middleware = async (req, res) => {
 
 export const getUnreadPacks: Middleware = async (req, res) => {
   try {
+    const cacheKey: string = `packs-getUnread-${res.locals.user.id}`;
+    const cachedRes = cache.get(cacheKey);
+    if (cachedRes) return res.status(200).send(cachedRes);
     const blockList: number[] = await getBlocksAsIdList(res.locals.user.id);
     const packs = await getPacksForReturn({
       where: {
@@ -184,6 +189,7 @@ export const getUnreadPacks: Middleware = async (req, res) => {
       userId: res.locals.user.id,
       blockList,
     });
+    cache.set(cacheKey, packs, CACHE_DURATION);
     return res.status(200).send(packs);
   } catch (error) {
     return handleError({ res, error, rName: "Pack" });
@@ -192,6 +198,7 @@ export const getUnreadPacks: Middleware = async (req, res) => {
 
 export const publishPack: Middleware = async (req, res) => {
   try {
+    cache.flushAll();
     await db.pack.update({
       where: { id: res.locals.id, creatorId: res.locals.user.id },
       data: {
@@ -206,6 +213,7 @@ export const publishPack: Middleware = async (req, res) => {
 
 export const unpublishPack: Middleware = async (req, res) => {
   try {
+    cache.flushAll();
     await db.pack.update({
       where: { id: res.locals.id, creatorId: res.locals.user.id },
       data: {
@@ -231,6 +239,9 @@ export const deleteOwnPack: Middleware = async (req, res) => {
 
 export const getAllPacks: Middleware = async (req, res) => {
   try {
+    const cacheKey: string = `packs-getAll-${res.locals.user.id}`;
+    const cachedRes = cache.get(cacheKey);
+    if (cachedRes) return res.status(200).send(cachedRes);
     const packs = await getPacksForReturn({
       where: {
         published: true,
@@ -241,6 +252,7 @@ export const getAllPacks: Middleware = async (req, res) => {
           ? await getBlocksAsIdList(res.locals.user.id)
           : [],
     });
+    cache.set(cacheKey, packs, CACHE_DURATION);
     return res.status(200).send(packs);
   } catch (error) {
     return handleError({ res, error, rName: "Pack" });
@@ -249,6 +261,11 @@ export const getAllPacks: Middleware = async (req, res) => {
 
 export const getAllPacksWithCategories: Middleware = async (req, res) => {
   try {
+    const cacheKey: string = `packs-getAllByCategory-${res.locals.user.id}`;
+    const cachedRes = cache.get(cacheKey);
+    if (cachedRes) {
+      return res.status(200).send(cachedRes);
+    }
     const categories = await db.category.findMany();
     const categorizedPacks: CategoryForResponse[] = await Promise.all(
       categories.map(async (cat) => ({
@@ -279,6 +296,7 @@ export const getAllPacksWithCategories: Middleware = async (req, res) => {
       packs: allPacks,
     };
     categorizedPacks.unshift(allPacksCategory);
+    cache.set(cacheKey, categorizedPacks, CACHE_DURATION);
     return res.status(200).send(categorizedPacks);
   } catch (error) {
     return handleError({ res, error, rName: "Pack" });

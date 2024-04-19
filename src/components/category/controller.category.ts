@@ -11,6 +11,8 @@ import {
 import { CategoryForResponse } from "./type.category";
 import { convertCategoryForResponse } from "./helpers.category";
 import { PackForResponse } from "../pack/type.pack";
+import cache from "../../cache/cache";
+import { CACHE_DURATION } from "../../constants/misc";
 
 export const getAllCategories: Middleware = async (req, res) => {
   try {
@@ -24,7 +26,7 @@ export const getAllCategories: Middleware = async (req, res) => {
       },
     });
     const categoriesForReturn: CategoryForResponse[] = categories.map((cat) =>
-      convertCategoryForResponse(cat),
+      convertCategoryForResponse(cat)
     );
     const allPacksCategory: CategoryForResponse = {
       id: 0,
@@ -40,6 +42,9 @@ export const getAllCategories: Middleware = async (req, res) => {
 
 export const getPacksForCategory: Middleware = async (req, res) => {
   try {
+    const cacheKey: string = `category-getPacksForCategory-${res.locals.id}-${res.locals.user.id}`;
+    const cachedRes = cache.get(cacheKey);
+    if (cachedRes) return res.status(200).send(cachedRes);
     const packs = await getPacksForReturn({
       where: {
         published: true,
@@ -52,6 +57,7 @@ export const getPacksForCategory: Middleware = async (req, res) => {
       userId: res.locals.user.id,
       blockList: await getBlocksAsIdList(res.locals.user.id),
     });
+    cache.set(cacheKey, packs, CACHE_DURATION);
     return res.status(200).send(packs);
   } catch (error) {
     return handleError({ error, res, rName: "Packs" });
@@ -60,6 +66,9 @@ export const getPacksForCategory: Middleware = async (req, res) => {
 
 export const getShortsForCategory: Middleware = async (req, res) => {
   try {
+    const cacheKey: string = `category-getShortsForCategory-${res.locals.id}-${res.locals.user.id}`;
+    const cachedRes = cache.get(cacheKey);
+    if (cachedRes) return res.status(200).send(cachedRes);
     const shorts = await db.short.findMany({
       where: {
         Category: {
@@ -79,9 +88,10 @@ export const getShortsForCategory: Middleware = async (req, res) => {
     const shortsToReturn: ShortForResponse[] = await Promise.all(
       shorts.map(
         async (short) =>
-          await convertShortForResponse(res.locals.user.id, short),
-      ),
+          await convertShortForResponse(res.locals.user.id, short)
+      )
     );
+    cache.set(cacheKey, shortsToReturn, CACHE_DURATION);
     return res.status(200).send(shortsToReturn);
   } catch (error) {
     return handleError({ rName: "Short", res, error });
@@ -90,7 +100,7 @@ export const getShortsForCategory: Middleware = async (req, res) => {
 
 export const getAllPacksAndShortsWithCategories: Middleware = async (
   req,
-  res,
+  res
 ) => {
   try {
     const categories = await db.category.findMany();
@@ -122,7 +132,7 @@ export const getAllPacksAndShortsWithCategories: Middleware = async (
           userId: res.locals.user.id,
           blockList: await getBlocksAsIdList(res.locals.user.id),
         }),
-      })),
+      }))
     );
     const allPacks: PackForResponse[] = await getPacksForReturn({
       where: { published: true },
