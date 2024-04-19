@@ -93,16 +93,17 @@ export const checkValidatorResult =
     }
   };
 
+// if (validationResult(req).array().length != 0) {
+//   return res.status(400).send({ message: "Please pass a valid id" });
+// }
+
 export const checkValidId = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  // if (validationResult(req).array().length != 0) {
-  //   return res.status(400).send({ message: "Please pass a valid id" });
-  // }
   const numberRegex: RegExp = /^[0-9]+$/;
-  if (!req.params.id) {
+  if (req.params == null || req.params.id == null) {
     return res.status(400).send({
       id: 110,
       message:
