@@ -1,6 +1,7 @@
 import { Request } from "express";
 import cors = require("cors");
 
+//TODO activate cors
 // const origins: Array<string> = [
 //   "https://lebenswiki.com",
 //   "https://editor.lebenswiki.com",
