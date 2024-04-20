@@ -5,6 +5,7 @@ import { PackForResponse } from "../type.pack";
 import { getPacksForReturn } from "../helpers.pack";
 import { getBlocksAsIdList } from "../../block/helpers.block";
 
+/** Adds a Pack to a users bookmarks */
 export const bookmarkPack: Middleware = async (req, res) => {
   try {
     await db.pack.update({
@@ -25,6 +26,7 @@ export const bookmarkPack: Middleware = async (req, res) => {
   }
 };
 
+/** Removes a Pack to a users bookmarks */
 export const removeBookmarkFromPack: Middleware = async (req, res) => {
   try {
     await db.pack.update({
@@ -47,6 +49,7 @@ export const removeBookmarkFromPack: Middleware = async (req, res) => {
   }
 };
 
+/** Gets all bookmarked packs for a user */
 export const getBookmarkedPacks: Middleware = async (req, res) => {
   try {
     const packs: PackForResponse[] = await getPacksForReturn({

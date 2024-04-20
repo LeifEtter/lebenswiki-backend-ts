@@ -2,6 +2,7 @@ import db from "../../../database/database";
 import { handleError } from "../../error/helper.error";
 import { Middleware } from "express-validator/src/base";
 
+/** Reports a pack, given a reason */
 export const reportPack: Middleware = async (req, res) => {
   try {
     const report = await db.report.create({
@@ -23,6 +24,7 @@ export const reportPack: Middleware = async (req, res) => {
   }
 };
 
+/** Retrieves all pack reports */
 export const getPackReports: Middleware = async (req, res) => {
   try {
     const reports = await db.report.findMany({

@@ -2,6 +2,7 @@ import { Middleware } from "express-validator/src/base";
 import db from "../../database/database";
 import { handleError } from "../error/helper.error";
 
+/** Creates user feedback */
 export const createFeedBack: Middleware = async (req, res) => {
   try {
     const { type, content } = req.body;

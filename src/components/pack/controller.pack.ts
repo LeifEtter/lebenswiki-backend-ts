@@ -14,6 +14,7 @@ import {
 import cache from "../../cache/cache";
 import { CACHE_DURATION } from "../../constants/misc";
 
+/** Updates a Pack */
 export const updatePack: Middleware = async (req, res) => {
   try {
     const { title, description, initiative, readTime, pages } = req.body;
@@ -63,6 +64,7 @@ export const updatePack: Middleware = async (req, res) => {
   }
 };
 
+/** Creates a Pack */
 export const createPack: Middleware = async (req, res) => {
   try {
     const { title, description, initiative, readTime, pages } = req.body;
@@ -116,6 +118,7 @@ export const viewPack: Middleware = async (req, res) => {
   }
 };
 
+/** Gets Users own unpublished packs */
 export const getOwnUnpublished: Middleware = async (req, res) => {
   try {
     const blockList: number[] = await getBlocksAsIdList(res.locals.user.id);
@@ -133,6 +136,7 @@ export const getOwnUnpublished: Middleware = async (req, res) => {
   }
 };
 
+/** Gets users published packs */
 export const getOwnPublished: Middleware = async (req, res) => {
   try {
     const blockList: number[] = await getBlocksAsIdList(res.locals.user.id);
@@ -150,6 +154,7 @@ export const getOwnPublished: Middleware = async (req, res) => {
   }
 };
 
+/** Gets All Packs a user has started to read */
 export const getReadPacks: Middleware = async (req, res) => {
   try {
     const blockList: number[] = await getBlocksAsIdList(res.locals.user.id);
@@ -171,6 +176,7 @@ export const getReadPacks: Middleware = async (req, res) => {
   }
 };
 
+/** Gets all Packs a user hasn't started to read */
 export const getUnreadPacks: Middleware = async (req, res) => {
   try {
     const cacheKey: string = `packs-getUnread-${res.locals.user.id}`;
@@ -196,6 +202,7 @@ export const getUnreadPacks: Middleware = async (req, res) => {
   }
 };
 
+/** Publishes a Pack */
 export const publishPack: Middleware = async (req, res) => {
   try {
     cache.flushAll();
@@ -211,6 +218,7 @@ export const publishPack: Middleware = async (req, res) => {
   }
 };
 
+/** Unpublishes a Pack */
 export const unpublishPack: Middleware = async (req, res) => {
   try {
     cache.flushAll();
@@ -226,6 +234,7 @@ export const unpublishPack: Middleware = async (req, res) => {
   }
 };
 
+/** Deletes a users pack */
 export const deleteOwnPack: Middleware = async (req, res) => {
   try {
     await db.pack.delete({
@@ -237,6 +246,7 @@ export const deleteOwnPack: Middleware = async (req, res) => {
   }
 };
 
+/** Gets All Published Packs, which were created by users the user hasn't blocked */
 export const getAllPacks: Middleware = async (req, res) => {
   try {
     const cacheKey: string = `packs-getAll-${res.locals.user.id}`;
@@ -259,6 +269,7 @@ export const getAllPacks: Middleware = async (req, res) => {
   }
 };
 
+/** Retrieves all categories and the corresponding packs, filtered by which creators are blocked by the user */
 export const getAllPacksWithCategories: Middleware = async (req, res) => {
   try {
     const cacheKey: string = `packs-getAllByCategory-${res.locals.user.id}`;
@@ -321,6 +332,7 @@ export const clapForPack: Middleware = async (req, res) => {
   }
 };
 
+/** Upload a cover image for a pack to S3 */
 export const uploadPackImage: Middleware = async (req, res) => {
   try {
     await uploadImageToS3(`packs/${res.locals.id}/cover.png`, req.file!.buffer);
@@ -332,6 +344,7 @@ export const uploadPackImage: Middleware = async (req, res) => {
   }
 };
 
+/** Retrieves a PackPage with ItemType.quiz by id */
 export const getQuizById: Middleware = async (req, res) => {
   try {
     const page = await db.packPage.findFirst({

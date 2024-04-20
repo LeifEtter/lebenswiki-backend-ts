@@ -1,6 +1,7 @@
 import { Middleware } from "express-validator/src/base";
 import db from "../../database/database";
 
+/** Creates a log for an event */
 export const catchLog: Middleware = async (req, res) => {
   try {
     const platform: string = req.body.platform;

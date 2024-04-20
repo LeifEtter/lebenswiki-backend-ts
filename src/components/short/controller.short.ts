@@ -8,6 +8,7 @@ import { CategoryForResponse } from "../category/type.category";
 import cache from "../../cache/cache";
 import { CACHE_DURATION } from "../../constants/misc";
 
+/** Get All Shorts that weren't created by users the requester has blocked, and that are published */
 export const getAllShorts: Middleware = async (req, res) => {
   try {
     const cacheKey: string = `shorts-getAll-${res.locals.user.id}`;
@@ -43,6 +44,7 @@ export const getAllShorts: Middleware = async (req, res) => {
   }
 };
 
+/** Create a short and publish it immediately if the user has a role level of 3 or higher */
 export const createShort: Middleware = async (req, res) => {
   try {
     const canPublishImmediately = res.locals.user.role.level >= 3;
@@ -76,6 +78,7 @@ export const createShort: Middleware = async (req, res) => {
   }
 };
 
+/** delete a users specific short */
 export const deleteShort: Middleware = async (req, res) => {
   try {
     await db.short.delete({
@@ -90,6 +93,7 @@ export const deleteShort: Middleware = async (req, res) => {
   }
 };
 
+/** Get all shorts the requester has bookmarked */
 export const getBookmarkedShorts: Middleware = async (req, res) => {
   try {
     const shorts = await db.short.findMany({
@@ -121,6 +125,7 @@ export const getBookmarkedShorts: Middleware = async (req, res) => {
   }
 };
 
+/** Get all shorts the requester has published */
 export const getOwnPublishedShorts: Middleware = async (req, res) => {
   try {
     const shorts = await db.short.findMany({
@@ -145,6 +150,7 @@ export const getOwnPublishedShorts: Middleware = async (req, res) => {
   }
 };
 
+/** Get all shorts the requester hasn't published */
 export const getOwnUnpublishedShorts: Middleware = async (req, res) => {
   try {
     const shorts = await db.short.findMany({
@@ -169,6 +175,7 @@ export const getOwnUnpublishedShorts: Middleware = async (req, res) => {
   }
 };
 
+/** get all categories and the corresponding published shorts */
 export const getAllShortsWithCategories: Middleware = async (req, res) => {
   try {
     const cacheKey: string = `shorts-getAll-${res.locals.user.id}`;
@@ -211,6 +218,7 @@ export const getAllShortsWithCategories: Middleware = async (req, res) => {
   }
 };
 
+/** Add a clap for a short */
 export const clapForShort: Middleware = async (req, res) => {
   try {
     await db.short.update({
@@ -229,6 +237,7 @@ export const clapForShort: Middleware = async (req, res) => {
   }
 };
 
+/** Publish a short */
 export const publishShort: Middleware = async (req, res) => {
   try {
     cache.flushAll();
@@ -244,6 +253,7 @@ export const publishShort: Middleware = async (req, res) => {
   }
 };
 
+/** Unpublish a short */
 export const unpublishShort: Middleware = async (req, res) => {
   try {
     cache.flushAll();
@@ -259,6 +269,7 @@ export const unpublishShort: Middleware = async (req, res) => {
   }
 };
 
+/** Bookmark a Short */
 export const bookmarkShort: Middleware = async (req, res) => {
   try {
     await db.short.update({
@@ -279,6 +290,7 @@ export const bookmarkShort: Middleware = async (req, res) => {
   }
 };
 
+/** Remove a short from users bookmarks */
 export const unbookmarkShort: Middleware = async (req, res) => {
   try {
     await db.short.update({
@@ -299,6 +311,7 @@ export const unbookmarkShort: Middleware = async (req, res) => {
   }
 };
 
+/** Create a report for a short */
 export const reportShort: Middleware = async (req, res) => {
   try {
     console.log(res.locals.user.id);
