@@ -3,6 +3,12 @@ import jwt = require("jsonwebtoken");
 import db = require("../database/database");
 import { GENERIC_AUTH_ERROR } from "../constants/errorMessages";
 
+/**
+ * If found, extracts token from request object
+ *
+ * @param req - Should contain a token in cookies or headers
+ * @returns Extracted token
+ */
 const extractTokenFromRequest = (req: Request) => {
   const bearer: string | undefined = req.headers.authorization;
   let token: string | undefined;
@@ -14,10 +20,18 @@ const extractTokenFromRequest = (req: Request) => {
   return token;
 };
 
+/**
+ * Checks for and validates the passed token, and appends the corresponding user details and role to the res object
+ *
+ * @param req - Should contain a token either in cookies or headers
+ * @param res - Contains locals object which user details are added to
+ * @param next - Called if authentication was successful
+ * @returns A response with Status 404 if authentication was unsuccessful
+ */
 const authenticate = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   const token = extractTokenFromRequest(req);
   if (!token) {
@@ -42,7 +56,7 @@ const authenticate = async (
     try {
       const jwtBody: jwt.JwtPayload | string = jwt.verify(
         token,
-        process.env.JWT_SECRET!,
+        process.env.JWT_SECRET!
       );
       if (typeof jwtBody == "string") {
         throw "Malformed Token, only a single string could be extracted";

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
+//TODO add comment
 const minLevel =
   (minAccessLevel: number) =>
   (req: Request, res: Response, next: NextFunction) => {
