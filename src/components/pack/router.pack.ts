@@ -99,15 +99,7 @@ router
   .route("/own/delete/:id")
   .delete(checkValidId, authenticate, minLevel(3), deleteOwnPack);
 
-router.route("/").get(
-  authenticate,
-  // (req: Request, res: Response, n: NextFunction) => {
-  //   console.log("right");
-  //   n();
-  // },
-  // cacheForSeconds(300),
-  getAllPacks
-);
+router.route("/").get(authenticate, getAllPacks);
 
 router
   .route("/clap/:id")
