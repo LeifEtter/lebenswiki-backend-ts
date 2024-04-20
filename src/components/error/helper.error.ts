@@ -8,6 +8,13 @@ interface PrismaErrorHandlerType {
   message?: string;
 }
 
+/**
+ * Handles Errors that occur in the controllers, and returns the appropriate message
+ * @param res - Response object
+ * @param rName - Name of the resource being requested
+ * @param error - Error object that was thrown
+ * @returns Response object with the appropriate status and error message and id
+ */
 export const handleError = ({
   res,
   rName,

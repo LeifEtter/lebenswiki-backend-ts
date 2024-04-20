@@ -10,6 +10,13 @@ type GetShortsForResponseType = {
   blockList: number[];
 };
 
+/**
+ * Assists in querying shorts
+ *
+ * @param where Contains the original query clause
+ * @param userId Contains the requesters user id
+ * @returns A List containing all the shorts ready for the frontend
+ */
 export const getShortsForResponse = async ({
   where,
   userId,
@@ -25,19 +32,26 @@ export const getShortsForResponse = async ({
     },
   });
   const shortsForResponse: ShortForResponse[] = await Promise.all(
-    shorts.map(async (short) => await convertShortForResponse(userId, short)),
+    shorts.map(async (short) => await convertShortForResponse(userId, short))
   );
   return shortsForResponse;
 };
 
+/**
+ * Assists in preparing a short for the frontend
+ *
+ * @param userId Contains the requesters user id
+ * @param short Contains a single queried short
+ * @returns Short ready for the frontend
+ */
 export const convertShortForResponse = async (
   userId: number,
-  short: ShortFromQuery,
+  short: ShortFromQuery
 ): Promise<ShortForResponse> => {
   const bookmarkCount: number = short.User_bookmarkedBy.length;
   const votes: number = short.User_upVote.length - short.User_downVote.length;
   const creator: UserForResponse = await convertUserForResponse(
-    short.User_Short_creatorIdToUser,
+    short.User_Short_creatorIdToUser
   );
   const totalClaps: number = short.User_clap.length;
   const userHasClapped =
