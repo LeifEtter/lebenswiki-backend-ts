@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { handleError } from "../../error/helper.error";
 import { Middleware } from "express-validator/src/base";
 
+/** Updates a users read progress for a specific pack */
 export const updateReadForPack: Middleware = async (req, res) => {
   try {
     const recordsUpdated: Prisma.BatchPayload = await db.read.updateMany({
@@ -28,6 +29,7 @@ export const updateReadForPack: Middleware = async (req, res) => {
   }
 };
 
+/** Creates a read for a specific pack */
 export const createReadForPack: Middleware = async (req, res) => {
   try {
     const existingRead = await db.read.findFirst({
@@ -45,11 +47,9 @@ export const createReadForPack: Middleware = async (req, res) => {
         },
         data: { progress: 1 },
       });
-      return res
-        .status(201)
-        .send({
-          message: "You have already created a read for this pack, its ok",
-        });
+      return res.status(201).send({
+        message: "You have already created a read for this pack, its ok",
+      });
     }
     const readResult = await db.read.create({
       data: {

@@ -20,6 +20,7 @@ const SALT_ROUNDS: number = 10;
 const TWO_HOURS_IN_MILLISECONDS = 2 * 60 * 60 * 1000;
 const THIRTY_DAYS_IN_MILLISECONDS = 30 * 24 * 60 * 60 * 1000;
 
+/** Checks if a token passed in the headers or cookies is valid */
 export const checkToken: Middleware = async (req, res) => {
   try {
     const user = await db.user.findUniqueOrThrow({
@@ -34,6 +35,7 @@ export const checkToken: Middleware = async (req, res) => {
   }
 };
 
+/** Creates a user account */
 export const register: Middleware = async (req, res) => {
   try {
     const { email, password, name, biography } = req.body;
@@ -66,6 +68,7 @@ export const register: Middleware = async (req, res) => {
   }
 };
 
+/** Returns a jwt token if user successfully logs in */
 export const login: Middleware = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -125,6 +128,7 @@ export const login: Middleware = async (req, res) => {
   }
 };
 
+/** Updates a users password if they pass a valid old password */
 export const updatePassword: Middleware = async (req, res) => {
   try {
     const { password, oldPassword } = req.body;
@@ -157,6 +161,7 @@ export const updatePassword: Middleware = async (req, res) => {
   }
 };
 
+/** Update Information of a user profile */
 export const updateProfile: Middleware = async (req, res) => {
   try {
     const { name, biography, avatar } = req.body;
@@ -176,6 +181,7 @@ export const updateProfile: Middleware = async (req, res) => {
   }
 };
 
+/** Returns a users own profile data as well as a presigned image url for their avatar */
 export const showProfile: Middleware = async (req, res) => {
   try {
     const user = await db.user.findUniqueOrThrow({
@@ -213,6 +219,7 @@ export const showProfile: Middleware = async (req, res) => {
     });
   }
 };
+/** Deletes a users own account */
 export const deleteUser: Middleware = async (req, res) => {
   try {
     await db.user.delete({ where: { id: res.locals.user.id } });
@@ -232,6 +239,7 @@ export const deleteUser: Middleware = async (req, res) => {
   }
 };
 
+/** Retrieves an other users profile, if they haven't blocked them or were blocked by them */
 export const getUsersProfile: Middleware = async (req, res) => {
   try {
     if ((await getBlocksAsIdList(res.locals.user.id)).includes(res.locals.id)) {
@@ -268,6 +276,7 @@ export const getUsersProfile: Middleware = async (req, res) => {
   }
 };
 
+/** Sets a bear avatar for a user */
 export const defaultAvatar: Middleware = async (req, res) => {
   try {
     await db.user.update({
@@ -280,6 +289,7 @@ export const defaultAvatar: Middleware = async (req, res) => {
   }
 };
 
+/** Lets requester block another user */
 export const blockUser: Middleware = async (req, res) => {
   try {
     const userToBlock = await db.user.findUnique({
@@ -320,7 +330,7 @@ export const blockUser: Middleware = async (req, res) => {
     });
   }
 };
-
+/** Lets requester unblock another user */
 export const unblockUser: Middleware = async (req, res) => {
   try {
     const userToBlock = await db.user.findUnique({
@@ -349,5 +359,3 @@ export const unblockUser: Middleware = async (req, res) => {
     });
   }
 };
-
-// Implement Anonymous login

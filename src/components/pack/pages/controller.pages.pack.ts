@@ -7,6 +7,7 @@ import db from "../../../database/database";
 import { handleError } from "../../error/helper.error";
 import { JsonPackPageItem } from "./type.pages.pack";
 
+/** Uploads an image to S3 given a pack and item id */
 export const uploadItemImage: Middleware = async (req, res) => {
   try {
     if (req.params == null || req.params.packId == null || !req.params.itemId) {
@@ -29,6 +30,7 @@ export const uploadItemImage: Middleware = async (req, res) => {
   }
 };
 
+/** Given a pack id and pages, it replaces the pages of the pack with the passed pages */
 export const updatePages: Middleware = async (req, res) => {
   try {
     const pack = await db.pack.findFirst({
@@ -38,7 +40,6 @@ export const updatePages: Middleware = async (req, res) => {
       return res.status(401).send({ message: "This isn't your pack" });
     }
     const pages = req.body;
-    // Delete all pages so don't have to update
     await db.packPage.deleteMany({
       where: {
         packId: parseInt(req.params!.packId),

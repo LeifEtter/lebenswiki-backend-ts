@@ -3,8 +3,14 @@ import { UserForResponse } from "./type.user";
 import { getSignedUrlForAvatar } from "../image/controller.image";
 import db from "../../database/database";
 
+/**
+ * Prepares user data for frontend
+ *
+ * @param user Contains a queried user
+ * @returns User object ready for the frontend
+ */
 export const convertUserForResponse = async (
-  user: User,
+  user: User
 ): Promise<UserForResponse> => {
   let profileImage: string | undefined;
   if (user.avatar == null) {

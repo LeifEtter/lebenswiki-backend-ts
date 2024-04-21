@@ -19,6 +19,7 @@ router.route("/").get(getAllCategories);
 
 router.route("/:id/packs").get(checkValidId, authenticate, getPacksForCategory);
 
+//TODO Remove unused Category
 // router
 //   .route("/:id")
 //   .get(checkValidId, authenticate, getPacksAndShortsForCategory);

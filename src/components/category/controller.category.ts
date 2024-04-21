@@ -14,6 +14,7 @@ import { PackForResponse } from "../pack/type.pack";
 import cache from "../../cache/cache";
 import { CACHE_DURATION } from "../../constants/misc";
 
+/** Get All Categories */
 export const getAllCategories: Middleware = async (req, res) => {
   try {
     const categories = await db.category.findMany({
@@ -40,6 +41,7 @@ export const getAllCategories: Middleware = async (req, res) => {
   }
 };
 
+/** Given a category id, retrieve all packs for that category */
 export const getPacksForCategory: Middleware = async (req, res) => {
   try {
     const cacheKey: string = `category-getPacksForCategory-${res.locals.id}-${res.locals.user.id}`;
@@ -64,6 +66,7 @@ export const getPacksForCategory: Middleware = async (req, res) => {
   }
 };
 
+/** Given a Category id, retrieve all shorts for that category */
 export const getShortsForCategory: Middleware = async (req, res) => {
   try {
     const cacheKey: string = `category-getShortsForCategory-${res.locals.id}-${res.locals.user.id}`;
@@ -98,6 +101,7 @@ export const getShortsForCategory: Middleware = async (req, res) => {
   }
 };
 
+//TODO Remove unused function
 export const getAllPacksAndShortsWithCategories: Middleware = async (
   req,
   res

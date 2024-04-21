@@ -1,7 +1,7 @@
 import db from "../../database/database";
 import { handleError } from "../error/helper.error";
 import { Middleware } from "express-validator/src/base";
-
+/** Unblocks the user whose id is passed */
 export const removeBlock: Middleware = async (req, res) => {
   try {
     const userToUnblockId = res.locals.id;
@@ -36,6 +36,7 @@ export const removeBlock: Middleware = async (req, res) => {
   }
 };
 
+/** Creates block for the user */
 export const blockUser: Middleware = async (req, res) => {
   try {
     if (res.locals.id == res.locals.user.id) {
@@ -70,6 +71,7 @@ export const blockUser: Middleware = async (req, res) => {
   }
 };
 
+/** Gets all blocks for a user */
 export const getMyBlocks: Middleware = async (req, res) => {
   try {
     const blocks = await db.block.findMany({

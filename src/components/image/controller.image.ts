@@ -13,8 +13,14 @@ const client = new S3Client({
   region: "eu-central-1",
 });
 
+/**
+ * Generates a presigned url for an image in S3
+ *
+ * @param path - The place where the image is stored in S3
+ * @returns A presigned url, pointing to an image in S3
+ */
 export const getSignedUrlForImageViewing = async (
-  path: string,
+  path: string
 ): Promise<string> => {
   const command = new GetObjectCommand({
     Bucket: "lebenswiki-storage",
@@ -24,6 +30,12 @@ export const getSignedUrlForImageViewing = async (
   return url;
 };
 
+/**
+ * Checks if an Object exists in S3
+ *
+ * @param path - The place where the image is stored in S3
+ * @returns True if the file exists at the given path, and false if not
+ */
 export const checkIfObjectExists = async (path: string): Promise<boolean> => {
   try {
     const command = new HeadObjectCommand({
@@ -37,12 +49,18 @@ export const checkIfObjectExists = async (path: string): Promise<boolean> => {
   }
 };
 
+/**
+ * Generates and returns a presigned url for a persons avatar
+ *
+ * @param userId - id of the person whose avatar is being retrieved
+ * @returns A presigned url pointing to a users avatar
+ */
 export const getSignedUrlForAvatar = async (userId: number): Promise<string> =>
   await getSignedUrlForImageViewing(`profiles/${userId}/avatar.png`);
 
 export const getSignedUrlForCover = async (packId: number): Promise<string> => {
   const objectExists: boolean = await checkIfObjectExists(
-    `packs/${packId}/cover.png`,
+    `packs/${packId}/cover.png`
   );
   return objectExists
     ? await getSignedUrlForImageViewing(`packs/${packId}/cover.png`)
@@ -59,7 +77,7 @@ export const getSignedUrlForCover = async (packId: number): Promise<string> => {
 
 export const uploadImageToS3 = async (
   path: string,
-  blob: Buffer,
+  blob: Buffer
 ): Promise<void> => {
   const command = new PutObjectCommand({
     Bucket: "lebenswiki-storage",
@@ -73,7 +91,11 @@ export const uploadImageToS3 = async (
     throw Error;
   }
 };
-
+/**
+ * Deletes image from S3
+ *
+ * @param path Location of image in S3 Bucket
+ */
 const deleteImageFromS3 = async (path: string) => {
   const command = new DeleteObjectCommand({
     Bucket: "lebenswiki-storage",
@@ -87,6 +109,7 @@ const deleteImageFromS3 = async (path: string) => {
   }
 };
 
+/** Retrieves avatar image and uploads to S3 */
 export const uploadAvatar: Middleware = async (req, res) => {
   try {
     const userId = res.locals.user.id;
@@ -103,6 +126,7 @@ export const uploadAvatar: Middleware = async (req, res) => {
   }
 };
 
+/** Deletes Avatar from s3 */
 export const deleteAvatar: Middleware = async (req, res) => {
   try {
     const userId: number = res.locals.user.id;

@@ -12,6 +12,13 @@ import {
   getSignedUrlForImageViewing,
 } from "../image/controller.image";
 
+/**
+ * Checks if a user has bookmarked a specific pack
+ *
+ * @param userId - Id of user checking if they have bookmarked a pack
+ * @param bookmarks - List containing users that bookmarked the pack
+ * @returns True if user has bookmarked the pack, False if not
+ */
 const checkIfUserHasBookmarked = (userId: number, bookmarks: User[]) => {
   const bookmarkMadeByUser = bookmarks.filter((user) => user.id == userId);
   if (bookmarkMadeByUser.length > 0) {
@@ -21,6 +28,13 @@ const checkIfUserHasBookmarked = (userId: number, bookmarks: User[]) => {
   }
 };
 
+/**
+ * Checks if a user has clapped for a pack
+ *
+ * @param userId - Id of user checking if they have clapped for a pack
+ * @param bookmarks - List containing users that clapped for pack
+ * @returns True if user has clapped for the pack, False if not
+ */
 const checkIfUserHasClapped = (userId: number, claps: User[]) => {
   const clappedByUser = claps.filter((user) => user.id == userId);
   if (clappedByUser.length > 0) {
@@ -37,6 +51,16 @@ type ConvertPackForResponseParams = {
   includePages?: boolean;
 };
 
+//TODO improve function, Improve Documentation
+/**
+ * Converts a pack for the frontend
+ *
+ * @param userId - user requesting the pack
+ * @param pack - the requested pack
+ * @param includeComments - if comments should be included
+ * @param includePages - if pages should be included
+ * @returns Pack for the Frontend
+ */
 export const convertPackForResponse = async ({
   userId,
   pack,
@@ -110,6 +134,16 @@ type GetPacksForReturnParams = {
   includePages?: boolean;
 };
 
+/**
+ * Retrieves pack from the db and converts them for response to frontend
+ *
+ * @param where - original query
+ * @param userId - userId of user requesting the packs
+ * @param blockList - userId's of users the requester has blocked
+ * @param includeComments - wether to include the packs comments
+ * @param includePages - whether to include the packs pages
+ * @returns
+ */
 export const getPacksForReturn = async ({
   where,
   userId,

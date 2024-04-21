@@ -7,6 +7,12 @@ interface checkValidatorResultType {
   msg: string;
 }
 
+/**
+ * Checks results from express validator
+ * @param resource Contains the name of the requested resource
+ * @param msg A custom message if no error message can be inferred
+ * @returns
+ */
 export const checkValidatorResult =
   ({ resource, msg }: checkValidatorResultType) =>
   (req: Request, res: Response, next: NextFunction) => {
@@ -93,10 +99,14 @@ export const checkValidatorResult =
     }
   };
 
-// if (validationResult(req).array().length != 0) {
-//   return res.status(400).send({ message: "Please pass a valid id" });
-// }
-
+/**
+ * Checks if the requester passed a valid id as a param
+ *
+ * @param req - Request, that should contain a valid integer id, e.g "packs/5"
+ * @param res - Response object, whose locals object the id is added too
+ * @param next - Called if id is valid
+ * @returns a response with the proper error message if id isn't valid
+ */
 export const checkValidId = (
   req: Request,
   res: Response,
@@ -120,14 +130,19 @@ export const checkValidId = (
   }
 };
 
+/**
+ * Checks if the requester passed a valid id as a param
+ *
+ * @param req - Request, that should contain a valid string id, e.g "packs/lrham5-2l4m"
+ * @param res - Response object, whose locals object the id is added too
+ * @param next - Called if id is valid
+ * @returns a response with the proper error message if id isn't valid
+ */
 export const checkValidStringId = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  // if (validationResult(req).array().length != 0) {
-  //   return res.status(400).send({ message: "Please pass a valid id" });
-  // }
   if (!req.params.id) {
     return res.status(400).send({
       id: 110,
