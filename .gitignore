@@ -7,3 +7,4 @@ node_modules
 .prettierrc
 prisma/seed-shorts-gen.ts
 .DS_Store
+src/.DS_Store
