@@ -13,7 +13,6 @@ import imageRouter from "./components/image/router.image";
 import shortRouter from "./components/short/router.short";
 import feedbackRouter from "./components/feedback/router.feedback";
 import logRouter from "./components/log/router.log";
-// import corsOptionsDelegate = require("./config/cors.config");
 
 const app = express();
 app.set("view engine", "ejs");
@@ -36,6 +35,5 @@ app.use("/image", imageRouter);
 app.use("/short", shortRouter);
 app.use("/feedback", feedbackRouter);
 app.use("/log", logRouter);
-// app.use(cors(corsOptionsDelegate));
 
 export default app;
