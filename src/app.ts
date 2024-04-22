@@ -25,7 +25,7 @@ app.route("/test").get((req, res: express.Response) => {
   return res.status(200).send({ message: "Working" });
 });
 app.route("/view/deleteAccount").get((req, res) => {
-  res.render("a");
+  res.render("deleteAccount");
 });
 app.use("/user", userRouter);
 app.use("/pack", packRouter);
