@@ -107,6 +107,9 @@ export const getAllPacksAndShortsWithCategories: Middleware = async (
   res
 ) => {
   try {
+    const cacheKey: string = `packs-getAll-${res.locals.user.id}`;
+    const cachedRes = cache.get(cacheKey);
+    if (cachedRes) return res.status(200).send(cachedRes);
     const categories = await db.category.findMany();
     const categorizedPacksAndShorts: CategoryForResponse[] = await Promise.all(
       categories.map(async (cat) => ({
@@ -155,6 +158,7 @@ export const getAllPacksAndShortsWithCategories: Middleware = async (
       shorts: allShorts,
     };
     categorizedPacksAndShorts.unshift(allPacksAndShortsCategory);
+    cache.set(cacheKey, allPacksAndShortsCategory, CACHE_DURATION);
     return res.status(200).send(categorizedPacksAndShorts);
   } catch (error) {
     return handleError({ res, error, rName: "Pack" });
