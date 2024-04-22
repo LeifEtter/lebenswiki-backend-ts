@@ -12,7 +12,7 @@
     "lint": "eslint . --ext .ts"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed-users-gen.ts",
+    "seed": "ts-node prisma/seed.ts",
     "other-seed": "ts-node prisma/other-seed.ts"
   },
   "keywords": [],
