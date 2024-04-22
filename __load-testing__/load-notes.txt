@@ -1,0 +1,14 @@
+-----
+Most used Routes and response times
+-----
+/pack/categorized - 600-800ms
+/short/categorized - 25ms
+/category/packsAndShorts - 800-1000ms
+Other routes under 50ms or not accessed
+
+Improve -> Implement caching
+Don't have to retrieve presigned urls
+
+
+
+
