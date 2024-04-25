@@ -8,6 +8,8 @@ type GetShortsForResponseType = {
   where: Prisma.ShortWhereInput;
   userId: number;
   blockList: number[];
+  take?: number;
+  skip?: number;
 };
 
 /**
@@ -20,8 +22,12 @@ type GetShortsForResponseType = {
 export const getShortsForResponse = async ({
   where,
   userId,
+  skip,
+  take,
 }: GetShortsForResponseType): Promise<ShortForResponse[]> => {
   const shorts = await db.short.findMany({
+    skip,
+    take,
     where,
     include: {
       User_Short_creatorIdToUser: true,

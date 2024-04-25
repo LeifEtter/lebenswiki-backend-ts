@@ -133,6 +133,8 @@ type GetPacksForReturnParams = {
   blockList: number[];
   includeComments?: boolean;
   includePages?: boolean;
+  take?: number;
+  skip?: number;
 };
 
 /**
@@ -151,9 +153,13 @@ export const getPacksForReturn = async ({
   blockList,
   includeComments,
   includePages,
+  take,
+  skip,
 }: GetPacksForReturnParams): Promise<PackForResponse[]> => {
   try {
     const packs: PackFromQuery[] = await db.pack.findMany({
+      take: take,
+      skip: skip,
       where: {
         User_Pack_creatorIdToUser: {
           id: {
