@@ -13,6 +13,7 @@ import { convertCategoryForResponse } from "./helpers.category";
 import { PackForResponse } from "../pack/type.pack";
 import cache from "../../cache/cache";
 import { CACHE_DURATION } from "../../constants/misc";
+import logger from "../../logging/logger";
 
 /** Get All Categories */
 export const getAllCategories: Middleware = async (req, res) => {
@@ -36,7 +37,7 @@ export const getAllCategories: Middleware = async (req, res) => {
     categoriesForReturn.unshift(allPacksCategory);
     return res.status(200).send(categoriesForReturn);
   } catch (err) {
-    console.log(err);
+    logger.error(err);
     return res.status(501).send({ message: "Couldn't get Categories" });
   }
 };

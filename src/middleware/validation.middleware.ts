@@ -20,8 +20,6 @@ export const checkValidatorResult =
     if (errors.length == 0) {
       next();
     } else {
-      console.log("Validator Detected an Error");
-      console.log(errors);
       for (const valError of errors) {
         if (valError.type == "field") {
           // USER VALIDATON

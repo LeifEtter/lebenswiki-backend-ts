@@ -11,6 +11,7 @@ import {
   getSignedUrlForCover,
   getSignedUrlForImageViewing,
 } from "../image/controller.image";
+import logger from "../../logging/logger";
 
 /**
  * Checks if a user has bookmarked a specific pack
@@ -224,7 +225,7 @@ export const getPacksForReturn = async ({
     );
     return packsForResponse;
   } catch (error) {
-    console.log("Error while trying to retrieve packs for return");
+    logger.error("Error while trying to retrieve packs for return" + error);
     throw error;
   }
 };
