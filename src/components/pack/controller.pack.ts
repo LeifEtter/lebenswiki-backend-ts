@@ -13,6 +13,7 @@ import {
 } from "../image/controller.image";
 import cache from "../../cache/cache";
 import { CACHE_DURATION } from "../../constants/misc";
+import logger from "../../logging/logger";
 
 /** Updates a Pack */
 export const updatePack: Middleware = async (req, res) => {
@@ -339,7 +340,7 @@ export const uploadPackImage: Middleware = async (req, res) => {
     const url = await getSignedUrlForCover(res.locals.id);
     return res.status(201).send(url);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res.status(501).send({ message: "Pack Image Couldn't be updated" });
   }
 };
@@ -368,7 +369,7 @@ export const getQuizById: Middleware = async (req, res) => {
     }
     return res.status(200).send(page);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res.status(501).send({ message: "Quiz couldn't be retrieved" });
   }
 };

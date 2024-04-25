@@ -314,7 +314,6 @@ export const unbookmarkShort: Middleware = async (req, res) => {
 /** Create a report for a short */
 export const reportShort: Middleware = async (req, res) => {
   try {
-    console.log(res.locals.user.id);
     const reason: string = req.body.reason;
     const short = await db.short.findUnique({
       where: {

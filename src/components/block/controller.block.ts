@@ -1,4 +1,5 @@
 import db from "../../database/database";
+import logger from "../../logging/logger";
 import { handleError } from "../error/helper.error";
 import { Middleware } from "express-validator/src/base";
 /** Unblocks the user whose id is passed */
@@ -28,6 +29,7 @@ export const removeBlock: Middleware = async (req, res) => {
       });
     }
   } catch (error) {
+    logger.error(error);
     return res.status(501).send({
       id: 9,
       message:

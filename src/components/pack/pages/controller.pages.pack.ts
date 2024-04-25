@@ -6,6 +6,7 @@ import {
 import db from "../../../database/database";
 import { handleError } from "../../error/helper.error";
 import { JsonPackPageItem } from "./type.pages.pack";
+import logger from "../../../logging/logger";
 
 /** Uploads an image to S3 given a pack and item id */
 export const uploadItemImage: Middleware = async (req, res) => {
@@ -25,7 +26,7 @@ export const uploadItemImage: Middleware = async (req, res) => {
     const url = await getSignedUrlForImageViewing(imagePath);
     return res.status(201).send(url);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res.status(501).send({ message: "Pack Image Couldn't be updated" });
   }
 };

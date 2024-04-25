@@ -8,6 +8,7 @@ import {
 } from "@aws-sdk/client-s3";
 import multer = require("multer");
 import { Middleware } from "express-validator/src/base";
+import logger from "../../logging/logger";
 
 const client = new S3Client({
   region: "eu-central-1",
@@ -44,7 +45,7 @@ export const checkIfObjectExists = async (path: string): Promise<boolean> => {
     });
     return (await client.send(command)).$metadata.httpStatusCode == 200;
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return false;
   }
 };
@@ -87,7 +88,7 @@ export const uploadImageToS3 = async (
   try {
     const result = await client.send(command);
   } catch (error) {
-    console.log("AWS Error while Uploading image: " + error);
+    logger.error("AWS Error while Uploading image: " + error);
     throw Error;
   }
 };
@@ -104,7 +105,7 @@ const deleteImageFromS3 = async (path: string) => {
   try {
     await client.send(command);
   } catch (error) {
-    console.log("Error deleting image: " + error);
+    logger.error("Error deleting image: " + error);
     throw error;
   }
 };
@@ -119,7 +120,7 @@ export const uploadAvatar: Middleware = async (req, res) => {
       .status(201)
       .send({ message: "Profile Image Update was successful", url: url });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res
       .status(501)
       .send({ message: "Profile Image Couldn't be updated" });
@@ -135,7 +136,7 @@ export const deleteAvatar: Middleware = async (req, res) => {
       .status(200)
       .send({ message: "Profile Image was deleted successfully" });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res
       .status(501)
       .send({ message: "Profile Image Couldn't be deleted" });

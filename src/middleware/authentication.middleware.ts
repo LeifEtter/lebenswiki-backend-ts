@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import jwt = require("jsonwebtoken");
 import db = require("../database/database");
 import { GENERIC_AUTH_ERROR } from "../constants/errorMessages";
+import logger from "../logging/logger";
 
 /**
  * If found, extracts token from request object
@@ -85,13 +86,20 @@ const authenticate = async (
         next();
       }
     } catch (error) {
-      console.log(error);
       if (error instanceof jwt.TokenExpiredError) {
+        logger.error(error);
         return res.status(401).send({
           message:
             "Your token has expired, please login to receive a new token",
         });
       }
+      if (error instanceof jwt.JsonWebTokenError) {
+        logger.error(error);
+        return res.status(401).send({
+          message: "The jwt token you passed was invalid",
+        });
+      }
+      logger.error(error);
       return res.status(401).send({ message: GENERIC_AUTH_ERROR });
     }
   }

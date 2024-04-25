@@ -2,6 +2,7 @@ import db from "../../../database/database";
 import { Prisma } from "@prisma/client";
 import { handleError } from "../../error/helper.error";
 import { Middleware } from "express-validator/src/base";
+import logger from "../../../logging/logger";
 
 /** Updates a users read progress for a specific pack */
 export const updateReadForPack: Middleware = async (req, res) => {
@@ -22,7 +23,7 @@ export const updateReadForPack: Middleware = async (req, res) => {
       message: `Reads progress successfully updated to ${req.body.progress}`,
     });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res
       .status(501)
       .send({ message: "Something went wrong updating the Read" });

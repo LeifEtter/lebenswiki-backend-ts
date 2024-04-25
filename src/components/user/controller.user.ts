@@ -15,6 +15,7 @@ import { PackForResponse } from "../pack/type.pack";
 import { convertUserForResponse } from "./helpers.user";
 import { UserForResponse } from "./type.user";
 import { getSignedUrlForAvatar } from "../image/controller.image";
+import logger from "../../logging/logger";
 
 const SALT_ROUNDS: number = 10;
 const TWO_HOURS_IN_MILLISECONDS = 2 * 60 * 60 * 1000;
@@ -80,7 +81,6 @@ export const login: Middleware = async (req, res) => {
     }
     const user = await db.user.findUnique({ where: { email: email } });
     if (!user) {
-      console.log("User not found");
       return res.status(404).send({ message: GENERIC_LOGIN_ERROR });
     }
     // Prevent anon login
@@ -121,7 +121,7 @@ export const login: Middleware = async (req, res) => {
     });
     return res.send(await convertUserForResponse(user));
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res
       .status(501)
       .send({ message: "Login Failed, please try again later" });
@@ -213,7 +213,7 @@ export const showProfile: Middleware = async (req, res) => {
     };
     return res.status(200).send(userForResponse);
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res.status(501).send({
       message: "Something went wrong while trying to retrieve your account",
     });
@@ -323,7 +323,7 @@ export const blockUser: Middleware = async (req, res) => {
     });
     return res.status(201).send({ message: "User has been blocked" });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res.status(501).send({
       message:
         "Something went wrong while blocking this user. Please contact us immediately.",
@@ -338,12 +338,9 @@ export const unblockUser: Middleware = async (req, res) => {
         id: res.locals.id,
       },
     });
-    console.log(userToBlock);
     if (!userToBlock) {
       return res.status(404).send({ message: "User couldn't be found" });
     }
-    console.log(res.locals.user.id);
-    console.log(res.locals.id);
     await db.block.deleteMany({
       where: {
         blockerId: res.locals.user.id,
@@ -352,7 +349,7 @@ export const unblockUser: Middleware = async (req, res) => {
     });
     return res.status(200).send({ message: "User has been unblocked" });
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     return res.status(501).send({
       message:
         "Something went wrong while unblocking this user. Please contact us immediately.",

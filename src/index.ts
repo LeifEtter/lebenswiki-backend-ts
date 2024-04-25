@@ -2,20 +2,22 @@ import app from "./app";
 import db from "./database/database";
 import https = require("https");
 import fs = require("fs");
+import logger from "./logging/logger";
 
 async function main() {
   try {
+    logger.info("Starting application");
     if (!process.env.JWT_SECRET) {
-      console.log("Please set a JWT_SECRET=[RANDOM STRING] in .env");
+      logger.info("Please set a JWT_SECRET=[RANDOM STRING] in .env");
       return;
     }
 
     const port: number | undefined = parseInt(process.env.PORT ?? "");
     if (!port) {
-      console.log("Please set a PORT=[PORT] in .env");
+      logger.info("Please set a PORT=[PORT] in .env");
       return;
     } else {
-      console.log(`Using Port = ${port}`);
+      logger.info(`Using Port = ${port}`);
     }
 
     const anonUser = await db.user.findUnique({
@@ -29,11 +31,11 @@ async function main() {
       anonUser.email != "anonymous@lebenswiki.com" ||
       anonUser.roleId != 1
     ) {
-      console.log(
+      logger.info(
         "Please add a anonymous user, and connect him with Role id=1, and/or make sure he has the following data:"
       );
-      console.log("email: anonymous@lebenswiki.com");
-      console.log("The other fields can be defined as anything you want.");
+      logger.info("email: anonymous@lebenswiki.com");
+      logger.info("The other fields can be defined as anything you want.");
       return;
     }
 
@@ -49,24 +51,24 @@ async function main() {
       };
       const server: https.Server = https.createServer(options, app);
       server.on("uncaughtException", (err) => {
-        console.log(err);
+        logger.error(err);
       });
       server.listen(port, (): void => {
-        console.log(`Server started on port = ${port}`);
+        logger.info(`Server started on port = ${port}`);
       });
     } else if (environment == "DEVELOPMENT") {
       app.listen(port, () => {
-        console.log(`=================================`);
-        console.log("Starting Node in Local Dev Mode");
-        console.log(`🚀 App listening on the port ${port}`);
-        console.log(`=================================`);
+        logger.info(`=================================`);
+        logger.info("Starting Node in Local Dev Mode");
+        logger.info(`🚀 App listening on the port ${port}`);
+        logger.info(`=================================`);
       });
     } else {
-      console.log("Please define ENV=[PRODUCTION/DEVELOPMENT] in .env");
+      logger.info("Please define ENV=[PRODUCTION/DEVELOPMENT] in .env");
       return;
     }
   } catch (err) {
-    console.log(err);
+    logger.error(err);
   }
 }
 

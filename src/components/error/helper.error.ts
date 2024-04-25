@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { Response } from "express";
+import logger from "../../logging/logger";
 
 interface PrismaErrorHandlerType {
   res: Response;
@@ -20,7 +21,7 @@ export const handleError = ({
   rName,
   error,
 }: PrismaErrorHandlerType): Response => {
-  console.log(error);
+  logger.error(error);
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     // Resource not found
     if (["P2001", "P2025"].includes(error.code)) {
