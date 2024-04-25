@@ -9,3 +9,4 @@ prisma/seed-shorts-gen.ts
 .DS_Store
 src/.DS_Store
 src/logging/app.log
+build
