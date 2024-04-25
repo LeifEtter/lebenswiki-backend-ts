@@ -21,7 +21,6 @@ const apiLimiter = rateLimit({
 
 const app = express();
 app.set("view engine", "ejs");
-// app.set("views", path.join(__dirname, "views"));
 app.set("views", `${__dirname}/views`);
 app.use("/api/", apiLimiter);
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
