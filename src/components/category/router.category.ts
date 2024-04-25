@@ -19,15 +19,8 @@ router.route("/").get(getAllCategories);
 
 router.route("/:id/packs").get(checkValidId, authenticate, getPacksForCategory);
 
-//TODO Remove unused Category
-// router
-//   .route("/:id")
-//   .get(checkValidId, authenticate, getPacksAndShortsForCategory);
-
 router
   .route("/:id/shorts")
   .get(checkValidId, authenticate, getShortsForCategory);
-
-// TODO: Add Routes for Creating, Deleting and Updating, as well as getting for shorts
 
 export default router;
