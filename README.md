@@ -1,6 +1,6 @@
 # Lebenswiki Backend
 
-The Lebenswiki Backend is consumed by the Lebenswiki Mobile App. Users can register and manage their accounts. They can also create and publish content such as Packs (interactive articles) and Shorts (twitter-like posts).
+The Lebenswiki Backend is consumed by the Lebenswiki Mobile App. Users can register and manage accounts. They can also create and publish content such as Packs (interactive articles) and Shorts (twitter-like posts).
 The Backend is part of the Lebenswiki Project, a project that strives to provide youths and young adults with a centralized repository for knowledge and interactive ways of learning.
 
 This documentation gives an overview of the App's Components and their Interactions. It assumes basic knowledge of JS, Node and Express, as well as the principles of REST API's.
@@ -14,28 +14,52 @@ This documentation gives an overview of the App's Components and their Interacti
 - [Node](https://nodejs.org/en/download) and NPM installed
 - MySQL Server installed and running
 
-To install the dependencies, run this in the projects root directory:
+Log into the mysql console with the admin account, and then enter the password:
 
-```bash
-npm i
+```other
+mysql -u [username] -p
 ```
-
-Create a ".env" file in the project root directory and add following lines:
-
-```bash
-PORT=5858
-ENV=DEVELOPMENT
-JWT_SECRET=8W1cwe/l6XlSqhb9
-DATABASE_URL=mysql://[mysqlUsername]:[mysqlPassword]@localhost:3306/lebenswikiDB
-```
-
-Notes: The JWT_SECRET can be any string.
-If using a different host then localhost:3306 for the db adjust it correspondingly.
 
 Then to create the database run this command inside the mysql console:
 
 ```bash
 CREATE DATABASE lebenswikiDB;
+```
+
+Create a new user with a custom password:
+
+```other
+CREATE USER 'lebenswiki_app'@'localhost' IDENTIFIED BY '[password]';
+```
+
+Select to use the db:
+
+```other
+USE lebenswikiDB;
+```
+
+Then grant permissions to the Database we previously created:
+
+```other
+GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES on *.* TO 'factchecker_app'@'localhost';
+```
+
+Create a ".env" file in the project root directory and add following lines, and replace [password] with the password previously set in the CREATE USER query:
+
+```bash
+PORT=5858
+ENV=DEVELOPMENT
+JWT_SECRET=8W1cwe/l6XlSqhb9
+DATABASE_URL=mysql://lebenswiki_app:[password]@localhost:3306/lebenswikiDB
+```
+
+Notes: The JWT_SECRET can be any string.
+If using a different host then localhost:3306 for the db adjust it correspondingly.
+
+To install the dependencies, run this in the projects root directory:
+
+```bash
+npm i
 ```
 
 Back in the root directory tell prisma to push the Schema to the database:
@@ -54,9 +78,11 @@ npx prisma db seed
 
 ## Architecture
 
+Tech Stack: Node/ExpressJS/Typescript/Prisma/MySQL
+
 The Backend is built on a monolithic architecture. It uses ExpressJS as the routing framework, and is developed using Typescript. For Linting the project uses eslint.
 
-The app mainly consists of routers, controllers and helpers. Routers contain the paths to the different resources and implement the middleware and controllers that are used for each specific route.
+The app mainly consists of routers, controllers and helpers. Routers contain the paths to the different resources (routes) and implement the middleware and controllers that are used for each specific route.
 Some controllers use helpers to get or convert data, and the controllers as well as the helpers access the database through a Prisma instance.
 
 ![Blank diagram (2).png](https://res.craft.do/user/full/b0e62220-21e7-3e79-e368-d4886dca007e/doc/B28F4E97-A6F7-42D6-9388-3D049F72B1F7/E58B443B-EEE0-4D4F-AF58-3C29BFDF7DE4_2/f7xcCk2pSi4gAIBAVk17AWh0Xkhp8wZca4Q6Uh7wzOQz/Blank%20diagram%202.png)
@@ -101,7 +127,11 @@ cache.set(cacheKey, packs, CACHE_DURATION);
 
 ## **Security**
 
-Besides the Security Principles mentioned in the Hosting the Backend employs a few ways of securing requests.
+Besides the Security Principles mentioned in the [Hosting section](craftdocs://open?blockId=B0B658A9-69B0-4638-B0F2-0F6C7E955373&spaceId=b0e62220-21e7-3e79-e368-d4886dca007e), the Backend employs a few ways of securing requests.
+
+**HTTPS**
+
+All communication between the client and backend is encrypted.
 
 **Authentication**
 
@@ -210,3 +240,9 @@ To secure the database, the node application and database are contained inside a
 **File Storage**
 
 All images for avatars and packs are stored inside an S3 Bucket. The images are served to applications accessing the API, by generating a presigned url which can be used to directly view the images from outside AWS. The Access keys are loaded inside the EC2 instance.
+
+---
+
+## Logging
+
+The app uses Pino to log events. It implements mostly info and error log events, and these are written to the console and an `app.log` file.
