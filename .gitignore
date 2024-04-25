@@ -6,3 +6,5 @@ node_modules
 .VSCodeCounter
 .prettierrc
 prisma/seed-shorts-gen.ts
+.DS_Store
+src/.DS_Store

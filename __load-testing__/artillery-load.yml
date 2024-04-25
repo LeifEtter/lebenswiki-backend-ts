@@ -36,3 +36,4 @@ scenarios:
               url: "/short/categorized"
           - get:
               url: "/category/packsAndShorts"
+        count: 20
