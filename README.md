@@ -99,15 +99,17 @@ The database is MySQL. To make database querying easier and safer, the backend u
 
 Most files have a naming schema as follows:
 
-::[purpose of file]::.::[location/main folder]::.::[subfolder]::.ts
+`[purpose of file].[location/main folder].[subfolder].ts`
 
-A file containing a middleware for authentication that is located in the middleware folder would be named: ::authentication::.::middleware::.ts
+A file containing a middleware for authentication that is located in the middleware folder would be named: `authentication.middleware.ts`
 
-A file for bookmark routes, which is located in a subfolder of pack, which is inside the components folder would be named: ::controller::.::bookmark::.::pack::.ts
+A file for bookmark routes, which is located in a subfolder of pack, which is inside the components folder would be named: `controller.bookmark.pack.ts`
 
 This choice was made, so that open files can always be distinguished from VSCode's topbar without having to check the folder tree on the left hand side.
 
-**Caching**
+---
+
+## **Caching**
 
 Certain routes are cached using node-cache. When a user makes a request to these routes, the controller will try to retrieve a cached response first.
 
