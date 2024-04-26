@@ -159,7 +159,7 @@ export const getAllPacksAndShortsWithCategories: Middleware = async (
       shorts: allShorts,
     };
     categorizedPacksAndShorts.unshift(allPacksAndShortsCategory);
-    cache.set(cacheKey, allPacksAndShortsCategory, CACHE_DURATION);
+    cache.set(cacheKey, categorizedPacksAndShorts, CACHE_DURATION);
     return res.status(200).send(categorizedPacksAndShorts);
   } catch (error) {
     return handleError({ res, error, rName: "Pack" });
