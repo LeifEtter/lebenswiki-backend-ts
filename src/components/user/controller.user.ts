@@ -115,7 +115,7 @@ export const login: Middleware = async (req, res) => {
     res.status(200);
     //TODO Figure out how to reduce token alive time
     res.cookie("jwt_token", token, {
-      secure: process.env.ENV! !== "DEVELOPMENT",
+      secure: process.env.NODE_ENV! !== "DEVELOPMENT",
       httpOnly: true,
       maxAge: THIRTY_DAYS_IN_MILLISECONDS,
     });
