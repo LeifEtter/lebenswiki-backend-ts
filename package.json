@@ -8,7 +8,6 @@
     "test": "jest",
     "start:dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
-    "postbuild": "ts-node src/copy-assets.ts",
     "start": "npm run build && node build/index.js",
     "lint": "eslint . --ext .ts"
   },
