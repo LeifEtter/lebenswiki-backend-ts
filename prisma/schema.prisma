@@ -3,15 +3,15 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
 model Role {
   id          Int    @unique @default(autoincrement())
-  name        String @db.Text
-  users       User[]
+  name        String
   accessLevel Int
+  users       User[]
 }
 
 model EventLog {
@@ -24,16 +24,13 @@ model EventLog {
 }
 
 model Block {
-  reason                     String   @db.Text
+  reason                     String
   blockerId                  Int
   creationDate               DateTime @default(now())
   id                         Int      @id @default(autoincrement())
   blockedId                  Int
   User_Block_blockedIdToUser User     @relation("Block_blockedIdToUser", fields: [blockedId], references: [id], onDelete: Cascade)
   User_Block_blockerIdToUser User     @relation("Block_blockerIdToUser", fields: [blockerId], references: [id], onDelete: Cascade)
-
-  @@index([blockedId], map: "Block_blockedId_fkey")
-  @@index([blockerId], map: "Block_blockerId_fkey")
 }
 
 model Category {
@@ -45,7 +42,7 @@ model Category {
 
 model Comment {
   id                           Int       @id @default(autoincrement())
-  commentResponse              String    @db.Text
+  commentResponse              String
   creatorId                    Int
   shortsCommentId              Int?
   parentCommentId              Int?
@@ -62,11 +59,6 @@ model Comment {
   Report                       Report[]
   User_commentDownVote         User[]    @relation("commentDownVote")
   User_commentUpVote           User[]    @relation("commentUpVote")
-
-  @@index([creatorId], map: "Comment_creatorId_fkey")
-  @@index([packAsCommentId], map: "Comment_packAsCommentId_fkey")
-  @@index([parentCommentId], map: "Comment_parentCommentId_fkey")
-  @@index([shortsCommentId], map: "Comment_shortsCommentId_fkey")
 }
 
 model Feedback {
@@ -75,8 +67,8 @@ model Feedback {
   reviewed     Boolean  @default(false)
   type         String   @default("Feedback")
   content      String
-  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Log {
@@ -87,69 +79,65 @@ model Log {
   userId       Int
   creationDate DateTime   @default(now())
   User         User       @relation(fields: [userId], references: [id])
-
-  @@index([userId], map: "Log_userId_fkey")
 }
 
 model Pack {
   id                        Int        @id @default(autoincrement())
   title                     String
-  description               String     @db.Text
+  description               String
   published                 Boolean    @default(false)
-  pages                     PackPage[]
   creatorId                 Int?
-  titleImage                String?    @db.Text
+  titleImage                String?
   reactions                 Json
   creationDate              DateTime   @default(now())
   lastUpdated               DateTime   @default(now())
   initiative                String
   readTime                  Int
-  imageIdentifier           String?    @db.Text
+  imageIdentifier           String?
   Comment                   Comment[]
-  User_Pack_creatorIdToUser User?      @relation("Pack_creatorIdToUser", fields: [creatorId], references: [id], onDelete: SetNull)
+  User_Pack_creatorIdToUser User?      @relation("Pack_creatorIdToUser", fields: [creatorId], references: [id])
+  pages                     PackPage[]
   Read                      Read[]
   Report                    Report[]
+  User                      User[]
   Category                  Category[] @relation("CategoryToPack")
   User_bookmarkedByForPack  User[]     @relation("bookmarkedByForPack")
   User_userClap             User[]     @relation("userClap")
-  User                      User[]
-
-  @@index([creatorId], map: "Pack_creatorId_fkey")
 }
 
 model PackPage {
   id         String         @unique
   pageNumber Int
   packId     Int
+  type       String         @default("PageType.info")
   pack       Pack           @relation(fields: [packId], references: [id], onDelete: Cascade)
   items      PackPageItem[]
-  type       String         @default("PageType.info")
 }
 
 model PackPageItem {
   id           String                    @unique @default(uuid())
   type         String
-  headContent  PackPageItemHeadContent?
-  bodyContent  PackPageItemBodyContent[]
-  PackPage     PackPage                  @relation(fields: [packPageId], references: [id], onDelete: Cascade)
   packPageId   String
   position     Int                       @default(0)
   notDeletable Boolean?                  @default(false)
+  PackPage     PackPage                  @relation(fields: [packPageId], references: [id], onDelete: Cascade)
+  bodyContent  PackPageItemBodyContent[]
+  headContent  PackPageItemHeadContent?
 }
 
 model PackPageItemHeadContent {
   id       String        @unique
-  value    String        @db.Text
-  parent   PackPageItem? @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  value    String
   parentId String?       @unique
+  parent   PackPageItem? @relation(fields: [parentId], references: [id], onDelete: Cascade)
 }
 
 model PackPageItemBodyContent {
   id              String       @unique
   value           String
-  parent          PackPageItem @relation(fields: [packPageItemId], references: [id], onDelete: Cascade)
   packPageItemId  String
   isCorrectAnswer Boolean?
+  parent          PackPageItem @relation(fields: [packPageItemId], references: [id], onDelete: Cascade)
 }
 
 model Read {
@@ -161,9 +149,6 @@ model Read {
   lastUpdated  DateTime @default(now())
   Pack         Pack     @relation(fields: [packId], references: [id], onDelete: Cascade)
   User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([packId], map: "Read_packId_fkey")
-  @@index([userId], map: "Read_userId_fkey")
 }
 
 model Report {
@@ -172,18 +157,12 @@ model Report {
   creationDate      DateTime @default(now())
   reason            String
   reportedShortId   Int?
-  // reportType        Report_reportType
   reportedCommentId Int?
   reportedPackId    Int?
-  Comment           Comment? @relation(fields: [reportedCommentId], references: [id], onDelete: SetNull)
-  Pack              Pack?    @relation(fields: [reportedPackId], references: [id], onDelete: SetNull)
-  Short             Short?   @relation(fields: [reportedShortId], references: [id], onDelete: SetNull)
-  User              User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([reportedCommentId], map: "Report_reportedCommentId_fkey")
-  @@index([reportedPackId], map: "Report_reportedPackId_fkey")
-  @@index([reportedShortId], map: "Report_reportedShortId_fkey")
-  @@index([userId], map: "Report_userId_fkey")
+  Comment           Comment? @relation(fields: [reportedCommentId], references: [id])
+  Pack              Pack?    @relation(fields: [reportedPackId], references: [id])
+  Short             Short?   @relation(fields: [reportedShortId], references: [id])
+  User              User?    @relation(fields: [userId], references: [id])
 }
 
 model Short {
@@ -196,17 +175,15 @@ model Short {
   reactions                  Json?
   creationDate               DateTime   @default(now())
   lastUpdated                DateTime   @default(now())
+  userId                     Int?
   Comment                    Comment[]
   Report                     Report[]
   User_Short_creatorIdToUser User       @relation("Short_creatorIdToUser", fields: [creatorId], references: [id], onDelete: Cascade)
   Category                   Category[] @relation("CategoryToShort")
+  User_clap                  User[]     @relation("Short_toUserClap")
   User_bookmarkedBy          User[]     @relation("bookmarkedBy")
   User_downVote              User[]     @relation("downVote")
   User_upVote                User[]     @relation("upVote")
-  User_clap                  User[]     @relation("Short_toUserClap")
-  userId                     Int?
-
-  @@index([creatorId], map: "Short_creatorId_fkey")
 }
 
 model User {
@@ -215,21 +192,26 @@ model User {
   password                        String
   name                            String
   isFirstLogin                    Boolean    @default(true)
-  avatar                          String?    @db.Text
-  biography                       String     @db.Text
-  role                            Role?      @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  avatar                          String?
+  biography                       String
   roleId                          Int?       @default(2)
   creationDate                    DateTime   @default(now())
   lastUpdated                     DateTime   @default(now())
   softDelete                      Boolean    @default(false)
+  packId                          Int?
+  shortId                         Int?
   Block_Block_blockedIdToUser     Block[]    @relation("Block_blockedIdToUser")
   Block_Block_blockerIdToUser     Block[]    @relation("Block_blockerIdToUser")
   Comment_Comment_creatorIdToUser Comment[]  @relation("Comment_creatorIdToUser")
+  Feedback                        Feedback[]
   Log                             Log[]
   Pack_Pack_creatorIdToUser       Pack[]     @relation("Pack_creatorIdToUser")
   Read                            Read[]
   Report                          Report[]
   Short_Short_creatorIdToUser     Short[]    @relation("Short_creatorIdToUser")
+  Pack                            Pack?      @relation(fields: [packId], references: [id])
+  role                            Role?      @relation(fields: [roleId], references: [id])
+  ClappedShorts                   Short[]    @relation("Short_toUserClap")
   Short_bookmarkedBy              Short[]    @relation("bookmarkedBy")
   Pack_bookmarkedByForPack        Pack[]     @relation("bookmarkedByForPack")
   Comment_commentDownVote         Comment[]  @relation("commentDownVote")
@@ -237,11 +219,6 @@ model User {
   Short_downVote                  Short[]    @relation("downVote")
   Short_upVote                    Short[]    @relation("upVote")
   Pack_userClap                   Pack[]     @relation("userClap")
-  Pack                            Pack?      @relation(fields: [packId], references: [id])
-  packId                          Int?
-  ClappedShorts                   Short[]    @relation("Short_toUserClap")
-  shortId                         Int?
-  Feedback                        Feedback[]
 }
 
 enum Log_action {
