@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "copy-views": "copyfiles -u 2 src/views/deleteAccount.ejs build/views/",
     "test": "jest",
     "start:dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
@@ -64,7 +65,7 @@
     "node-cache": "^5.1.2",
     "pino": "^9.0.0",
     "pino-pretty": "^11.0.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
     "rimraf": "^5.0.5"
   }
 }
