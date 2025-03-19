@@ -10,3 +10,4 @@ prisma/seed-shorts-gen.ts
 src/.DS_Store
 src/logging/app.log
 build
+.github/workflows/*.wip.yaml
