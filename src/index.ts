@@ -38,24 +38,37 @@ async function main() {
       logger.info("The other fields can be defined as anything you want.");
       return;
     }
+    const environment: string | undefined = process.env.NODE_ENV;
 
-    const environment: string | undefined = process.env.ENV;
     if (environment == "PRODUCTION") {
-      const options: https.ServerOptions = {
-        key: fs.readFileSync(
-          "/etc/letsencrypt/live/api.lebenswiki.com/privkey.pem"
-        ),
-        cert: fs.readFileSync(
-          "/etc/letsencrypt/live/api.lebenswiki.com/fullchain.pem"
-        ),
-      };
-      const server: https.Server = https.createServer(options, app);
-      server.on("uncaughtException", (err) => {
-        logger.error(err);
-      });
-      server.listen(port, (): void => {
-        logger.info(`Server started on port = ${port}`);
-      });
+      const keyPath: string | undefined = process.env.KEY_PATH;
+      const certPath: string | undefined = process.env.CERT_PATH;
+      if (keyPath && certPath) {
+        const options: https.ServerOptions = {
+          key: fs.readFileSync(
+            "/etc/letsencrypt/live/api.lebenswiki.com/privkey.pem"
+          ),
+          cert: fs.readFileSync(
+            "/etc/letsencrypt/live/api.lebenswiki.com/fullchain.pem"
+          ),
+        };
+        const server: https.Server = https.createServer(options, app);
+        server.listen(port, (): void => {
+          logger.info(
+            `HTTPS Server started on port = ${port} using supplied Cert and Key`
+          );
+        });
+        server.on("uncaughtException", (err) => {
+          logger.error(err);
+        });
+      } else {
+        app.listen(port, (): void => {
+          logger.info(`HTTP Server started on port = ${port}`);
+        });
+        app.on("uncaughtException", (err) => {
+          logger.error(err);
+        });
+      }
     } else if (environment == "DEVELOPMENT") {
       app.listen(port, () => {
         logger.info(`=================================`);
