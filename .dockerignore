@@ -1,0 +1,13 @@
+node_modules
+.vscode
+.eslintignore
+.eslintrc
+.VSCodeCounter
+.prettierrc
+.DS_Store
+src/.DS_Store
+src/logging/app.log
+*.md
+.git
+.env
+build
